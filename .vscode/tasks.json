@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Dungen.Client/Dungen.Client.csproj",
+                "${workspaceFolder}/Daedalus.Client/Daedalus.Client.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Dungen.Client/Dungen.Client.csproj",
+                "${workspaceFolder}/Daedalus.Dungen/Daedalus.Dungen.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/Dungen.Client/Dungen.Client.csproj"
+                "${workspaceFolder}/Daedalus.Client/Daedalus.Client.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
