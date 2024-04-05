@@ -2,38 +2,74 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-client",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Daedalus.Client/Daedalus.Client.csproj",
+                "${workspaceFolder}/src/Client/Daedalus.Client/Daedalus.Client.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "build-server",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/Server/Daedalus.Server/Daedalus.Server.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish-client",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Daedalus.Dungen/Daedalus.Dungen.csproj",
+                "${workspaceFolder}/src/Client/Daedalus.Dungen/Daedalus.Dungen.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "publish-server",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/Server/Daedalus.Server/Daedalus.Server.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch-client",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/Daedalus.Client/Daedalus.Client.csproj"
+                "${workspaceFolder}/src/Client/Daedalus.Client/Daedalus.Client.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch-server",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/src/Server/Daedalus.Server/Daedalus.Server.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

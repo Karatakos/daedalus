@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Dungen", "Daedalus.Dungen\Daedalus.Dungen.csproj", "{07533BCE-8BB1-4C46-AC99-CB01D6353899}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Game", "src\Daedalus.Game\Daedalus.Game.csproj", "{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Dungen.Tests", "Daedalus.Dungen.Tests\Daedalus.Dungen.Tests.csproj", "{7564885D-1F61-4596-B7A4-2CE0D887A6C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Core.Tiled", "src\Daedalus.Core.Tiled\Daedalus.Core.Tiled.csproj", "{483D17AC-DBE1-4368-ACF4-1FB9D2CBE257}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Client", "Daedalus.Client\Daedalus.Client.csproj", "{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Core.Tiled.Tests", "test\Daedalus.Core.Tiled.Tests\Daedalus.Core.Tiled.Tests.csproj", "{5E8FEDD6-8123-4B69-96AF-EA5B89179090}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Game.Server", "src\Daedalus.Game.Server\Daedalus.Game.Server.csproj", "{9D99014D-D536-4408-BD54-36BD21EF456B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,21 +20,21 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{35E41843-F638-46BB-8C1F-DE4B0B28FC7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35E41843-F638-46BB-8C1F-DE4B0B28FC7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35E41843-F638-46BB-8C1F-DE4B0B28FC7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35E41843-F638-46BB-8C1F-DE4B0B28FC7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07533BCE-8BB1-4C46-AC99-CB01D6353899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07533BCE-8BB1-4C46-AC99-CB01D6353899}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07533BCE-8BB1-4C46-AC99-CB01D6353899}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07533BCE-8BB1-4C46-AC99-CB01D6353899}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7564885D-1F61-4596-B7A4-2CE0D887A6C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7564885D-1F61-4596-B7A4-2CE0D887A6C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7564885D-1F61-4596-B7A4-2CE0D887A6C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7564885D-1F61-4596-B7A4-2CE0D887A6C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{483D17AC-DBE1-4368-ACF4-1FB9D2CBE257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{483D17AC-DBE1-4368-ACF4-1FB9D2CBE257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{483D17AC-DBE1-4368-ACF4-1FB9D2CBE257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{483D17AC-DBE1-4368-ACF4-1FB9D2CBE257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E8FEDD6-8123-4B69-96AF-EA5B89179090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8FEDD6-8123-4B69-96AF-EA5B89179090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E8FEDD6-8123-4B69-96AF-EA5B89179090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8FEDD6-8123-4B69-96AF-EA5B89179090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D99014D-D536-4408-BD54-36BD21EF456B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D99014D-D536-4408-BD54-36BD21EF456B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D99014D-D536-4408-BD54-36BD21EF456B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D99014D-D536-4408-BD54-36BD21EF456B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

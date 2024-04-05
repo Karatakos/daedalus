@@ -1,0 +1,25 @@
+[
+    {
+        "label": "s-sq-1",
+        "points": [
+            [-5, -5],
+            [-5, 5],
+            [5, 5],
+            [5, -5]
+        ],
+        "compatible-tilemaps": [
+            "s-sq-desert-1"
+        ]},
+    {
+        "label": "s-sq-2",
+        "points": [
+            [-5, -5],
+            [-5, 5],
+            [5, 5],
+            [5, -5]
+        ],
+        "compatible-tilemaps": [
+            "s-sq-desert-1"
+        ]
+    }
+]

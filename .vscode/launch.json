@@ -5,14 +5,30 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": ".NET Core Launch (console)",
+            "name": "Launch Game Client",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-client",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Daedalus.Client/bin/Debug/net6.0/Daedalus.Client.dll",
+            "program": "${workspaceFolder}/src/Client/Daedalus.Client/bin/Debug/net8.0/Daedalus.Client.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Daedalus.Client",
+            "cwd": "${workspaceFolder}/src/Client/Daedalus.Client",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            // Use IntelliSense to find out which attributes exist for C# debugging
+            // Use hover for the description of the existing attributes
+            // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+            "name": "Launch Game Server",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-server",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/src/Server/Daedalus.Server/bin/Debug/net8.0/Daedalus.Server.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/Server/Daedalus.Server",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

@@ -1,0 +1,24 @@
+[
+    {
+        "label": "entrance",
+        "type": "Entrance",
+        "blueprints": [
+            "s-sq-1"
+        ]
+    },
+    {
+        "label": "normal",
+        "type": "Normal",
+        "blueprints": [
+            "s-sq-1",
+            "s-sq-2"
+        ]
+    },
+    {
+        "label": "exit",
+        "type": "Exit",
+        "blueprints": [
+            "s-sq-1"
+        ]
+    }
+]

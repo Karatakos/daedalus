@@ -1,0 +1,138 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/adrian/Workspace/Dungen/Mumei.Client/Mumei.Client.csproj": {}
+  },
+  "projects": {
+    "/Users/adrian/Workspace/dungen/Dungen/Dungen.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/adrian/Workspace/dungen/Dungen/Dungen.csproj",
+        "projectName": "Dungen",
+        "projectPath": "/Users/adrian/Workspace/dungen/Dungen/Dungen.csproj",
+        "packagesPath": "/Users/adrian/.nuget/packages/",
+        "outputPath": "/Users/adrian/Workspace/dungen/Dungen/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/adrian/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "GraphPlanarityTesting": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "com.angusj.Clipper": {
+              "target": "Package",
+              "version": "[6.4.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.408/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/adrian/Workspace/Dungen/Mumei.Client/Mumei.Client.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/adrian/Workspace/Dungen/Mumei.Client/Mumei.Client.csproj",
+        "projectName": "Mumei.Client",
+        "projectPath": "/Users/adrian/Workspace/Dungen/Mumei.Client/Mumei.Client.csproj",
+        "packagesPath": "/Users/adrian/.nuget/packages/",
+        "outputPath": "/Users/adrian/Workspace/Dungen/Mumei.Client/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/adrian/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/Users/adrian/Workspace/dungen/Dungen/Dungen.csproj": {
+                "projectPath": "/Users/adrian/Workspace/dungen/Dungen/Dungen.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MonoGame.Content.Builder.Task": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.408/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
