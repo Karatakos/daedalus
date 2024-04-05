@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "dgSpecHash": "AAi8c4Jc7HLfU2ti5lxK/uAhvppku+blSsLidk+ch7nxqMa3Tr1nPJgLUCY/3gfGuAhAQyrgNeCwmbeD2dob1Q==",
+  "success": true,
+  "projectFilePath": "/Users/adrian/Workspace/daedalus/src/Daedalus.Core.Tiled/Daedalus.Core.Tiled.csproj",
+  "expectedPackageFiles": [
+    "/Users/adrian/.nuget/packages/com.angusj.clipper/6.4.2/com.angusj.clipper.6.4.2.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/dungen/1.0.14/dungen.1.0.14.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/fluentresults/3.15.2/fluentresults.3.15.2.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/graphplanaritytesting/1.0.0/graphplanaritytesting.1.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/microsoft.extensions.logging/8.0.0/microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.0/microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/microsoft.extensions.options/8.0.0/microsoft.extensions.options.8.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/monogame.framework.desktopgl/3.8.1.303/monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/system.io.abstractions/20.0.28/system.io.abstractions.20.0.28.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/testableio.system.io.abstractions/20.0.28/testableio.system.io.abstractions.20.0.28.nupkg.sha512",
+    "/Users/adrian/.nuget/packages/testableio.system.io.abstractions.wrappers/20.0.28/testableio.system.io.abstractions.wrappers.20.0.28.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'com.angusj.Clipper 6.4.2' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "libraryId": "com.angusj.Clipper",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}
