@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "k0+5uLqvOsE5zSYU6G4l81s+XqVl2qoMLBtiuEdVNi6hmnqNt0VnuT8oqJBNsXDjbA5OOAgm/bCbugfNqcnD1g==",
+  "dgSpecHash": "JUnPDtHYla/zIdylvjP4odT6p0ac1hSEh7dRWPrmXv8QKBeNzfrIDoiQ5SJR6PqBtjfCIF5qUf6fcPnnlRqzFw==",
   "success": true,
   "projectFilePath": "/Users/adrian/Workspace/daedalus/test/Daedalus.Core.Tiled.Tests/Daedalus.Core.Tiled.Tests.csproj",
   "expectedPackageFiles": [

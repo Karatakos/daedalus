@@ -1,4 +1,6 @@
-namespace Daedalus.Tiled.ContentProviders;
+namespace Daedalus.Core.Tiled.Procedural.ContentProviders;
+
+using Daedalus.Core.Tiled.Maps;
 
 public record TiledMapContent (
     TiledMapGraphContent Graph,

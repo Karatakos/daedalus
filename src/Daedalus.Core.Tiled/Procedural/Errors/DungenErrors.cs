@@ -1,4 +1,4 @@
-namespace Daedalus.Tiled.Errors;
+namespace Daedalus.Core.Tiled.Procedural.Errors;
 
 using FluentResults;
 

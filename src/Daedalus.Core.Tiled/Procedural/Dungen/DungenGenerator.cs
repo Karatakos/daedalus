@@ -1,20 +1,20 @@
-namespace Daedalus.Tiled;
+namespace Daedalus.Core.Tiled.Procedural;
 
-using Daedalus.Tiled.ContentProviders;
-using Daedalus.Tiled.Errors;
+using Daedalus.Core.Tiled.Procedural.ContentProviders;
+using Daedalus.Core.Tiled.Procedural.Errors;
 
 using Dungen;
 
 using Microsoft.Extensions.Logging;
 using FluentResults;
 
-public class DungenAdapter {
+public class DungenGenerator {
     private readonly ILogger _logger;
     private readonly ILoggerFactory _loggerFactory;
 
-    public DungenAdapter(ILoggerFactory loggerFactory) {
+    public DungenGenerator(ILoggerFactory loggerFactory) {
         _loggerFactory = loggerFactory;
-        _logger = loggerFactory.CreateLogger<DungenAdapter>();
+        _logger = loggerFactory.CreateLogger<DungenGenerator>();
     }
 
     /* Converts input graph to Dungen friendly graph and calls into the
@@ -25,11 +25,11 @@ public class DungenAdapter {
     */
     public async Task<Result<DungenLayout>> GenerateAsync(
         TiledMapContent inputGraph,
-        TiledMapBuilderProps inputProps) {
+        TiledMapDungenBuilderProps inputProps) {
 
         var props = CreateDungenGeneratorProps(inputProps);
 
-        var graph = CreateDungenGraph(inputGraph);
+        var graph = CreateGraph(inputGraph);
         if (graph.IsFailed)
             return Result.Fail(graph.Errors);
 
@@ -38,7 +38,7 @@ public class DungenAdapter {
         return await Task.Run(() => GenerateDungenLayout(props));
     }
 
-    private Result<DungenGraph> CreateDungenGraph(TiledMapContent graphInputData) {
+    private Result<DungenGraph> CreateGraph(TiledMapContent graphInputData) {
         DungenGraph graph = new DungenGraph();
 
         Dictionary<string, RoomDefinition> definitions = new Dictionary<string, RoomDefinition>();
@@ -88,7 +88,7 @@ public class DungenAdapter {
         return graph;
     }
 
-    private DungenGeneratorProps CreateDungenGeneratorProps(TiledMapBuilderProps props) {
+    private DungenGeneratorProps CreateDungenGeneratorProps(TiledMapDungenBuilderProps props) {
         return new DungenGeneratorProps() {
             LoggerFactory = _loggerFactory,
             DoorWidth = props.DoorWidth,
@@ -98,7 +98,7 @@ public class DungenAdapter {
     }
 
     private Result<DungenLayout> GenerateDungenLayout(DungenGeneratorProps props) {
-        DungenGenerator generator = new(props);
+        Dungen.DungenGenerator generator = new(props);
 
         // Compute config spaces, validate planar graph, etc.
         //

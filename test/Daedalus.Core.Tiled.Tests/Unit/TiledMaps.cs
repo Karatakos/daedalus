@@ -1,8 +1,10 @@
-namespace Daedalus.Tiled.Tests;
+namespace Daedalus.Core.Tiled.Tests;
 
 using Microsoft.Xna.Framework;
 
 using FluentAssertions;
+
+using Daedalus.Core.Tiled.Maps;
 
 public class TileMaps
 {
@@ -17,29 +19,25 @@ public class TileMaps
     [SetUp]
     public void Setup() {
         _map = new TiledMap(
-            "",
-            "rightdown",
             _width,
             _height,
             _tileWidth,
-            _tileHeight,
-            new List<TiledMapLayer>(),
-            new List<TiledSet>());
+            _tileHeight);
 
-        var data = new int[] {
+        _map.Layers.Add(new TiledMapLayer(
+            0,
+            TiledMapLayerType.tilelayer,
+            "tile map layer 1",
+            _map.Width,
+            _map.Height));
+
+        _map.Layers[0].Data = [
             1, 2, 2, 2, 3,
             9, 10, 10, 10, 11,
             9, 10, 10, 10, 11,
             9, 10, 10, 10, 11,
             17, 18, 18, 18, 19
-        };
-
-        _map.Layers.Add(new TiledMapLayer(
-            0,
-            "tile map layer 1",
-            data,
-            _map.Width,
-            _map.Height));
+        ];   
     }
 
     [TearDown]
@@ -51,7 +49,7 @@ public class TileMaps
         [Values(new int[]{10, 50}, new int[]{0, 0}, new int[]{120, 0})] int[] x, 
         [Values(5, 0, 3)] int y) {
 
-        int tile = _map.GetTileIndexForWorldSpacePosition(new Vector2(x[0], x[1]));
+        int tile = _map.GetTileIndexContainingWorldSpacePosition(new Vector2(x[0], x[1]));
 
         tile.Should().Be(y);
     }
