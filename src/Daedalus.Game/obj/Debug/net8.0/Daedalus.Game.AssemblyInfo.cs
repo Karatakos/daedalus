@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Daedalus.Game")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8535f21ad048d930d74db0d7b4c40beb4b24763")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+76c2a73ad97c567fd3babd7e8da40970b63ad97b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Daedalus.Game")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Daedalus.Game")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
