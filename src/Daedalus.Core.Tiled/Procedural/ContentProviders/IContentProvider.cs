@@ -1,4 +1,4 @@
-namespace Daedalus.Tiled.ContentProviders;
+namespace Daedalus.Core.Tiled.Procedural.ContentProviders;
 
 using Dungen;
 using FluentResults;

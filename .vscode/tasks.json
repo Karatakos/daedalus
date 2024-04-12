@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Client/Daedalus.Client/Daedalus.Client.csproj",
+                "${workspaceFolder}/src/Daedalus.Game/Daedalus.Game.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,31 +19,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Server/Daedalus.Server/Daedalus.Server.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish-client",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/src/Client/Daedalus.Dungen/Daedalus.Dungen.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish-server",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/src/Server/Daedalus.Server/Daedalus.Server.csproj",
+                "${workspaceFolder}/src/Daedalus.Game.Server/Daedalus.Game.Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -57,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/Client/Daedalus.Client/Daedalus.Client.csproj"
+                "${workspaceFolder}/src/Daedalus.Game/Daedalus.Game.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -69,7 +45,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/Server/Daedalus.Server/Daedalus.Server.csproj"
+                "${workspaceFolder}/src/Daedalus.Game.Server/Daedalus.Game.Server.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

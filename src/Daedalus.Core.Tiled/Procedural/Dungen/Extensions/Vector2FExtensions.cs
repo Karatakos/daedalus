@@ -1,4 +1,4 @@
-namespace Daedalus.Tiled;
+namespace Daedalus.Core.Tiled.Procedural.Extensions;
 
 using Microsoft.Xna.Framework;
 

@@ -17,22 +17,200 @@
          "id":1,
          "name":"Tile Layer 1",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"Test",
+                 "type":"string",
+                 "value":"true"
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":10,
          "x":0,
          "y":0
+        }, 
+        {
+         "id":2,
+         "layers":[
+                {
+                 "id":4,
+                 "layers":[
+                        {
+                         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 20, 21, 0, 0, 0, 0,
+                            0, 0, 0, 0, 28, 29, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         "height":10,
+                         "id":3,
+                         "name":"Tile Layer 2",
+                         "opacity":1,
+                         "type":"tilelayer",
+                         "visible":true,
+                         "width":10,
+                         "x":0,
+                         "y":0
+                        }],
+                 "name":"Group 2",
+                 "opacity":1,
+                 "type":"group",
+                 "visible":true,
+                 "x":0,
+                 "y":0
+                }],
+         "name":"Group 1",
+         "opacity":1,
+         "type":"group",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "id":6,
+         "layers":[
+                {
+                 "draworder":"topdown",
+                 "id":5,
+                 "name":"Object Layer 1",
+                 "objects":[
+                        {
+                         "height":0,
+                         "id":1,
+                         "name":"",
+                         "point":true,
+                         "properties":[
+                                {
+                                 "name":"EnemyHealth",
+                                 "type":"string",
+                                 "value":"100"
+                                }, 
+                                {
+                                 "name":"ObjectId",
+                                 "type":"string",
+                                 "value":"1"
+                                }, 
+                                {
+                                 "name":"ObjectType",
+                                 "type":"string",
+                                 "value":"enemy"
+                                }, 
+                                {
+                                 "name":"Type",
+                                 "type":"string",
+                                 "value":"spawn"
+                                }],
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":0,
+                         "x":208,
+                         "y":146
+                        }, 
+                        {
+                         "height":18,
+                         "id":3,
+                         "name":"",
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":20,
+                         "x":225,
+                         "y":49
+                        }, 
+                        {
+                         "ellipse":true,
+                         "height":26.1,
+                         "id":4,
+                         "name":"",
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":25,
+                         "x":114,
+                         "y":45
+                        }, 
+                        {
+                         "height":0,
+                         "id":5,
+                         "name":"",
+                         "polygon":[
+                                {
+                                 "x":0,
+                                 "y":0
+                                }, 
+                                {
+                                 "x":23,
+                                 "y":30
+                                }, 
+                                {
+                                 "x":-8,
+                                 "y":31
+                                }],
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":0,
+                         "x":66,
+                         "y":131
+                        }, 
+                        {
+                         "gid":31,
+                         "height":32,
+                         "id":7,
+                         "name":"",
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":32,
+                         "x":206.026850421766,
+                         "y":190.884163003445
+                        }, 
+                        {
+                         "gid":46,
+                         "height":32,
+                         "id":8,
+                         "name":"",
+                         "rotation":0,
+                         "type":"",
+                         "visible":true,
+                         "width":32,
+                         "x":162.685992633955,
+                         "y":99.2600689081621
+                        }],
+                 "opacity":1,
+                 "type":"objectgroup",
+                 "visible":true,
+                 "x":0,
+                 "y":0
+                }],
+         "name":"Group 3",
+         "opacity":1,
+         "type":"group",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":1,
+ "nextlayerid":11,
+ "nextobjectid":9,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"Test",
+         "type":"string",
+         "value":"true"
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.8.5",
  "tileheight":32,
  "tilesets":[
         {
          "firstgid":1,
-         "source":"../desert.tileset.tsx"
+         "source":"..\/..\/tmp\/tilemaps\/desert.tileset.tsx"
         }],
  "tilewidth":32,
  "type":"map",

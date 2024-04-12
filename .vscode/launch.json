@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build-client",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Client/Daedalus.Client/bin/Debug/net8.0/Daedalus.Client.dll",
+            "program": "${workspaceFolder}/src/Daedalus.Game/bin/Debug/net8.0/Daedalus.Game.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Client/Daedalus.Client",
+            "cwd": "${workspaceFolder}/src/Daedalus.Game",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
@@ -26,9 +26,9 @@
             "request": "launch",
             "preLaunchTask": "build-server",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Server/Daedalus.Server/bin/Debug/net8.0/Daedalus.Server.dll",
+            "program": "${workspaceFolder}/src/Daedalus.Game.Server/bin/Debug/net8.0/Daedalus.Game.Server.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Server/Daedalus.Server",
+            "cwd": "${workspaceFolder}/src/Daedalus.Game.Server",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

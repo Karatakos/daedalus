@@ -1,7 +1,8 @@
 ﻿namespace Daedalus.Server;
 
-using Daedalus.Tiled;
-using Daedalus.Tiled.ContentProviders;
+using Daedalus.Core.Tiled.Maps;
+using Daedalus.Core.Tiled.Procedural;
+using Daedalus.Core.Tiled.Procedural.ContentProviders;
 
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -21,15 +22,17 @@ class Program
 
         logger.LogInformation("Generating a tile map...");
 
-        string workingDir = Path.Combine(Directory.GetCurrentDirectory(), "../../../maps");
-        string outputDir = Path.Combine(workingDir, "tmp/maps");
+        string workingDir = Path.Combine(Directory.GetCurrentDirectory(), "../../content/maps");
+        string outputDir = Path.Combine(workingDir, "../tmp/tilemaps");
 
-        TiledMapBuilder builder = new TiledMapBuilder(
+        TiledMapDungenBuilder builder = new TiledMapDungenBuilder(
             new LocalDiskContentProvider(
                 loggerFactory, new FileSystem(), workingDir), loggerFactory);
 
         try {
-            var res = await builder.BuildAsync("simple-loop", new TiledMapBuilderProps());
+            var res = await builder.BuildAsync("simple-loop", 
+                new TiledMapDungenBuilderProps() { EmptyTileGid = 30 });
+
             if (res.IsFailed) {
                 logger.LogError(res.Errors[0].Message);
                 return;
@@ -37,7 +40,7 @@ class Program
 
             logger.LogInformation("Writing map to disk ...");
 
-            var mapJson = JsonSerializer.Serialize<TiledMap>(res.Value, new JsonSerializerOptions() { WriteIndented = true });
+            var mapJson = JsonSerializer.Serialize<TiledMapDungen>(res.Value, new JsonSerializerOptions() { WriteIndented = true });
             File.WriteAllText(Path.Combine(outputDir, "generatedmap.json"), mapJson);
         }
         catch (Exception ex) {

@@ -1,10 +1,12 @@
-namespace Daedalus.Tiled.ContentProviders;
+namespace Daedalus.Core.Tiled.Procedural.ContentProviders;
 
-using Daedalus.Tiled.Errors;
+using Daedalus.Core.Tiled.Maps;
+using Daedalus.Core.Tiled.Procedural.Errors;
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Linq;
 using System.IO.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -27,23 +29,26 @@ public class LocalDiskContentProvider : IContentProvider {
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly string _directory;
 
-    public LocalDiskContentProvider(ILoggerFactory loggerFactory, IFileSystem fs, string directory) {
-        _logger = loggerFactory.CreateLogger<LocalDiskContentProvider>();
-        _fs = fs;
-        _directory = directory;
-
-        _jsonSerializerOptions = new JsonSerializerOptions() {
-            PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower
-        };
-    }
+    public LocalDiskContentProvider(ILoggerFactory loggerFactory, IFileSystem fs, string directory) 
+        : this(loggerFactory, fs, directory, new JsonSerializerOptions() {
+            PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower}) 
+    {}
 
     public LocalDiskContentProvider(
         ILoggerFactory loggerFactory, 
         IFileSystem fs, 
         string directory,
-        JsonSerializerOptions options) : this(loggerFactory, fs, directory) {
-            
+        JsonSerializerOptions options){
+        
+        _logger = loggerFactory.CreateLogger<LocalDiskContentProvider>();
+        _fs = fs;
+        _directory = directory;
         _jsonSerializerOptions = options;
+
+        // Use the [JsonStringEnumConverter] attribute string-enum casting
+        //
+        _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        _jsonSerializerOptions.PropertyNameCaseInsensitive = true;
     }
 
     /* Loads the given graph as well as it's dependent blueprints and room definitions.
