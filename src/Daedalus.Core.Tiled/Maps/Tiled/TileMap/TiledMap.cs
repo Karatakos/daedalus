@@ -59,7 +59,7 @@ public class TiledMap {
     public TiledMapType Type { get; set; }
 
     [JsonPropertyName("properties")]
-    public List<TiledMapProperty> Properties { get; set; }
+    public List<TiledProperty> Properties { get; set; }
 
     public TiledMap(
         int width,

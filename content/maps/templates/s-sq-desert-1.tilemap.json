@@ -33,37 +33,27 @@
          "id":2,
          "layers":[
                 {
-                 "id":4,
-                 "layers":[
-                        {
-                         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 20, 21, 0, 0, 0, 0,
-                            0, 0, 0, 0, 28, 29, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         "height":10,
-                         "id":3,
-                         "name":"Tile Layer 2",
-                         "opacity":1,
-                         "type":"tilelayer",
-                         "visible":true,
-                         "width":10,
-                         "x":0,
-                         "y":0
-                        }],
-                 "name":"Group 2",
+                 "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 20, 21, 0, 0, 0, 0,
+                    0, 0, 0, 0, 28, 29, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                 "height":10,
+                 "id":3,
+                 "name":"Tile Layer 2",
                  "opacity":1,
-                 "type":"group",
+                 "type":"tilelayer",
                  "visible":true,
+                 "width":10,
                  "x":0,
                  "y":0
                 }],
-         "name":"Group 1",
+         "name":"Foreground",
          "opacity":1,
          "type":"group",
          "visible":true,
@@ -159,18 +149,6 @@
                          "y":131
                         }, 
                         {
-                         "gid":31,
-                         "height":32,
-                         "id":7,
-                         "name":"",
-                         "rotation":0,
-                         "type":"",
-                         "visible":true,
-                         "width":32,
-                         "x":206.026850421766,
-                         "y":190.884163003445
-                        }, 
-                        {
                          "gid":46,
                          "height":32,
                          "id":8,
@@ -179,8 +157,8 @@
                          "type":"",
                          "visible":true,
                          "width":32,
-                         "x":162.685992633955,
-                         "y":99.2600689081621
+                         "x":144.057027444458,
+                         "y":177.577759296662
                         }],
                  "opacity":1,
                  "type":"objectgroup",
@@ -188,7 +166,7 @@
                  "x":0,
                  "y":0
                 }],
-         "name":"Group 3",
+         "name":"Objects",
          "opacity":1,
          "type":"group",
          "visible":true,
@@ -210,7 +188,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/..\/tmp\/tilemaps\/desert.tileset.tsx"
+         "source":"tilsets/s-sq-desert-1.tileset.json"
         }],
  "tilewidth":32,
  "type":"map",

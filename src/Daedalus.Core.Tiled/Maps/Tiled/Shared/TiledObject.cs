@@ -2,7 +2,7 @@ namespace Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
 
-public class TiledMapObject {
+public class TiledObject {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
@@ -34,15 +34,15 @@ public class TiledMapObject {
         public bool IsEllipse { get; set; }
 
         [JsonPropertyName("polygon")]
-        public List<TiledMapPolygon2d> Polygon { get; set; }
+        public List<TiledPolygon2d> Polygon { get; set; }
 
         [JsonPropertyName("gid")]
         public int Gid { get; set; }
 
         [JsonPropertyName("properties")]
-        public List<TiledMapProperty> Properties { get; set; }
+        public List<TiledProperty> Properties { get; set; }
 
-        public TiledMapObject(
+        public TiledObject(
             int id,
             string name,
             string type

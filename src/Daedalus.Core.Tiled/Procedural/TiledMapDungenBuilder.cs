@@ -54,7 +54,11 @@ public class TiledMapDungenBuilder
         if (dungenLayout.IsFailed)
             return Result.Fail(dungenLayout.Errors);
 
-        return BuildMap(dungenLayout.Value, mapData.Value.RoomBlueprints, mapData.Value.Templates, props);
+        return BuildMap(
+            dungenLayout.Value, 
+            mapData.Value.GraphDependencies.RoomBlueprints, 
+            mapData.Value.GraphDependencies.Templates, 
+            props);
     }   
 
     private Result<TiledMapDungen> BuildMap(

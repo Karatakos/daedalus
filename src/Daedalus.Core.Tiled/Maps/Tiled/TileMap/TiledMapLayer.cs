@@ -30,7 +30,7 @@ public class TiledMapLayer {
         public int[] Data { get; set; }
 
         [JsonPropertyName("objects")]
-        public List<TiledMapObject> Objects { get; set; }
+        public List<TiledObject> Objects { get; set; }
 
         [JsonPropertyName("width")]
         public int Width { get; set; }
@@ -55,7 +55,7 @@ public class TiledMapLayer {
         public TiledMapLayerObjectDrawOrder Draworder { get; set; }
         
         [JsonPropertyName("properties")]
-        public List<TiledMapProperty> Properties { get; set; }
+        public List<TiledProperty> Properties { get; set; }
 
         [JsonPropertyName("layers")]
         public List<TiledMapLayer> Layers { get; set; }

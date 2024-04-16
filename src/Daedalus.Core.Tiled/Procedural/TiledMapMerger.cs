@@ -114,7 +114,7 @@ internal class TiledMapMerger
                     Array.Fill<int>(mapLayer.Data, emptyGid);
                 }  
                 else {
-                    mapLayer.Objects = new List<TiledMapObject>();
+                    mapLayer.Objects = new List<TiledObject>();
                     mapLayer.Draworder = tempLayer.Draworder;
                 }
             }
@@ -129,8 +129,8 @@ internal class TiledMapMerger
     }
 
     private void TransformMergeObjectLayerWithMapLayer(TiledMapLayer destinationLayer, TiledMapLayer sourceLayer, Vector2 position) {
-        foreach (TiledMapObject templateObject in sourceLayer.Objects) {
-            var copy = new TiledMapObject(++ObjectCount, templateObject.Name, templateObject.Type) {
+        foreach (TiledObject templateObject in sourceLayer.Objects) {
+            var copy = new TiledObject(++ObjectCount, templateObject.Name, templateObject.Type) {
                 X = templateObject.X + position.X,
                 Y = templateObject.Y + position.Y,
                 Width = templateObject.Width,
@@ -141,17 +141,17 @@ internal class TiledMapMerger
                 Gid = templateObject.Gid };
             
             if (templateObject.Polygon != null) {
-                copy.Polygon = new List<TiledMapPolygon2d>();
+                copy.Polygon = new List<TiledPolygon2d>();
 
-                foreach (TiledMapPolygon2d poly in templateObject.Polygon)
-                    copy.Polygon.Add(new TiledMapPolygon2d(poly.X, poly.Y));
+                foreach (TiledPolygon2d poly in templateObject.Polygon)
+                    copy.Polygon.Add(new TiledPolygon2d(poly.X, poly.Y));
             }
 
             if (templateObject.Properties != null) {
-            copy.Properties = new List<TiledMapProperty>();
+            copy.Properties = new List<TiledProperty>();
 
-            foreach (TiledMapProperty prop in templateObject.Properties)
-                copy.Properties.Add(new TiledMapProperty(prop.Name, prop.Type, prop.Value));
+            foreach (TiledProperty prop in templateObject.Properties)
+                copy.Properties.Add(new TiledProperty(prop.Name, prop.Type, prop.Value));
             }
 
             destinationLayer.Objects.Add(copy);
