@@ -17,7 +17,7 @@ public enum TiledSetOrientation {
 */
 public class TiledSetTile {
     [JsonPropertyName("id")] 
-    public int Id { get; set; }
+    public uint Id { get; set; }
 
     [JsonPropertyName("objectgroup")] 
     public TiledSetObjectGroup ObjectGroup { get; set; }

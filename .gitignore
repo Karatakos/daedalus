@@ -1,14 +1,17 @@
+# Project
 content/tmp
 
+# OS
 *.swp
 *.*~
-project.lock.json
 .DS_Store
+project.lock.json
 *.pyc
+
+# Nuget
 nupkg/
 
 # Visual Studio Code
-.vscode
 
 # Rider
 .idea

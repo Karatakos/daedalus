@@ -28,16 +28,16 @@ public class TiledSet {
     public int Spacing { get; set; }
     
     [JsonPropertyName("tilecount")] 
-    public int TileCount { get; set; }
+    public uint TileCount { get; set; }
     
     [JsonPropertyName("tilewidth")] 
-    public int TileWidth { get; set; }
+    public uint TileWidth { get; set; }
     
     [JsonPropertyName("tileheight")] 
-    public int TileHeight { get; set; }
+    public uint TileHeight { get; set; }
     
     [JsonPropertyName("columns")] 
-    public int Columns { get; set; }
+    public uint Columns { get; set; }
 
     [JsonPropertyName("tiles")] 
     public List<TiledSetTile> Tiles { get; set; }

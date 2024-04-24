@@ -40,7 +40,7 @@ class Program
 
             logger.LogInformation("Writing map to disk ...");
 
-            var mapJson = JsonSerializer.Serialize<TiledMapDungen>(res.Value, new JsonSerializerOptions() { WriteIndented = true });
+            var mapJson = JsonSerializer.Serialize<TiledMapDungen>(res.Value);
             File.WriteAllText(Path.Combine(outputDir, "generatedmap.json"), mapJson);
         }
         catch (Exception ex) {

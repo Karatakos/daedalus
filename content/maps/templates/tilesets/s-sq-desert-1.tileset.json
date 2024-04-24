@@ -36,7 +36,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -68,7 +68,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -111,7 +111,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -120,7 +120,7 @@
          "id":3,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -134,7 +134,12 @@
                  "value":"East"
                 }, 
                 {
-                 "name":"TileType",
+                 "name":"IsFirstDoor",
+                 "type":"string",
+                 "value":"true"
+                }, 
+                {
+                 "name":"Type",
                  "type":"string",
                  "value":"Door"
                 }]
@@ -143,7 +148,7 @@
          "id":5,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -152,7 +157,7 @@
          "id":6,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -161,7 +166,7 @@
          "id":7,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -193,7 +198,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -202,7 +207,7 @@
          "id":9,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -234,7 +239,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -243,7 +248,7 @@
          "id":11,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -257,7 +262,7 @@
                  "value":"East"
                 }, 
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Door"
                 }]
@@ -266,7 +271,7 @@
          "id":13,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -275,7 +280,7 @@
          "id":14,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -284,7 +289,7 @@
          "id":15,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -316,7 +321,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -348,7 +353,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -380,7 +385,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -389,7 +394,7 @@
          "id":19,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -398,7 +403,7 @@
          "id":20,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -407,7 +412,7 @@
          "id":21,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -416,7 +421,7 @@
          "id":22,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -425,7 +430,7 @@
          "id":23,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -434,7 +439,7 @@
          "id":24,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -443,7 +448,7 @@
          "id":25,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -452,7 +457,7 @@
          "id":26,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -461,7 +466,7 @@
          "id":27,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -470,7 +475,7 @@
          "id":28,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -479,7 +484,7 @@
          "id":29,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -488,7 +493,7 @@
          "id":30,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -497,7 +502,7 @@
          "id":31,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -506,7 +511,7 @@
          "id":32,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -515,7 +520,7 @@
          "id":33,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -524,7 +529,7 @@
          "id":34,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Floor"
                 }]
@@ -538,7 +543,12 @@
                  "value":"North"
                 }, 
                 {
-                 "name":"TileType",
+                 "name":"IsFirstDoor",
+                 "type":"string",
+                 "value":"true"
+                }, 
+                {
+                 "name":"Type",
                  "type":"string",
                  "value":"Door"
                 }]
@@ -552,7 +562,7 @@
                  "value":"North"
                 }, 
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Door"
                 }]
@@ -561,7 +571,7 @@
          "id":37,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -570,7 +580,7 @@
          "id":38,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -579,7 +589,7 @@
          "id":39,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -588,7 +598,7 @@
          "id":40,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -597,7 +607,7 @@
          "id":41,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -606,7 +616,7 @@
          "id":42,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Wall"
                 }]
@@ -620,7 +630,7 @@
                  "value":"North"
                 }, 
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Door"
                 }]
@@ -634,7 +644,7 @@
                  "value":"North"
                 }, 
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Door"
                 }]
@@ -703,7 +713,7 @@
             },
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -712,7 +722,7 @@
          "id":46,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]
@@ -721,7 +731,7 @@
          "id":47,
          "properties":[
                 {
-                 "name":"TileType",
+                 "name":"Type",
                  "type":"string",
                  "value":"Object"
                 }]

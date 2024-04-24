@@ -10,27 +10,27 @@ using Microsoft.Xna.Framework;
 
 internal class TiledMapMerger
 {
-    public HashSet<int> DirtyTileIndices;
+    public HashSet<uint> DirtyTileIndices;
     private readonly ILogger _logger;
     private readonly ILoggerFactory _loggerFactory; 
     private int ObjectCount = 0;
 
-    public TiledMapMerger(
+    internal TiledMapMerger(
         ILoggerFactory loggerFactory) {
 
         _logger = loggerFactory.CreateLogger<TiledMapMerger>();
         _loggerFactory = loggerFactory;
         
-        DirtyTileIndices = new HashSet<int>();
+        DirtyTileIndices = new HashSet<uint>();
     }
 
     /* Merges source map into destination map. Mutates destination map.
     */
-    public Result<TiledMap> Merge(
+    internal Result<TiledMap> Merge(
         TiledMap destination,
         TiledMap source,
         Vector2 position,
-        int emptyGid) {
+        uint emptyGid) {
 
         // For tile layers a caller may need to know which tiles of the destination map were touched
         //
@@ -78,7 +78,7 @@ internal class TiledMapMerger
         return destination;
     }
 
-    private void MergeLayersWithMap(TiledMap destination, TiledMap source, List<TiledMapLayer> layers, Vector2 position, int emptyGid, ref int layerIndex) {
+    private void MergeLayersWithMap(TiledMap destination, TiledMap source, List<TiledMapLayer> layers, Vector2 position, uint emptyGid, ref int layerIndex) {
         // Algorithm:
         //
         //  Given a valid room template:
@@ -109,9 +109,9 @@ internal class TiledMapMerger
                 if (tempLayer.Type == TiledMapLayerType.tilelayer) {
                     var tileLayerDataSize = destination.Width * destination.Height;
 
-                    mapLayer.Data = new int[tileLayerDataSize];
+                    mapLayer.Data = new uint[tileLayerDataSize];
                     
-                    Array.Fill<int>(mapLayer.Data, emptyGid);
+                    Array.Fill<uint>(mapLayer.Data, emptyGid);
                 }  
                 else {
                     mapLayer.Objects = new List<TiledObject>();
@@ -165,7 +165,7 @@ internal class TiledMapMerger
         TiledMap source, 
         Vector2 position) {
 
-        for (int j = 0; j < sourceLayer.Data.Length; j++) {
+        for (uint j = 0; j < sourceLayer.Data.Length; j++) {
             var localpos = source.GetWorldSpacePositionForTileIndex(j);
             var worldTileIndex = destination.GetTileIndexContainingWorldSpacePosition(position + localpos);
 

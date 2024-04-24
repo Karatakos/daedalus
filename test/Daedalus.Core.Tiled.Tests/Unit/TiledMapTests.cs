@@ -6,15 +6,15 @@ using FluentAssertions;
 
 using Daedalus.Core.Tiled.Maps;
 
-public class TileMaps
+public class TiledMapTests
 {
     private TiledMap _map;
-    private readonly int _width = 5;
-    private readonly int _height = 5;
-    private readonly int _tileWidth = 32;
-    private readonly int _tileHeight = 32;
-    private readonly int _worldWidth = 160;
-    private readonly int _worldHeight = 160;
+    private readonly uint _width = 5;
+    private readonly uint _height = 5;
+    private readonly uint _tileWidth = 32;
+    private readonly uint _tileHeight = 32;
+    private readonly uint _worldWidth = 160;
+    private readonly uint _worldHeight = 160;
 
     [SetUp]
     public void Setup() {
@@ -49,9 +49,9 @@ public class TileMaps
         [Values(new int[]{10, 50}, new int[]{0, 0}, new int[]{120, 0})] int[] x, 
         [Values(5, 0, 3)] int y) {
 
-        int tile = _map.GetTileIndexContainingWorldSpacePosition(new Vector2(x[0], x[1]));
+        var tile = _map.GetTileIndexContainingWorldSpacePosition(new Vector2(x[0], x[1]));
 
-        tile.Should().Be(y);
+        tile.Should().Be((uint)y);
     }
 
     [Test, Sequential]
@@ -59,7 +59,7 @@ public class TileMaps
         [Values(5, 0)] int x, 
         [Values(new int[]{0, 32}, new int[]{0, 0})] int[] y) {
 
-        var pos = _map.GetWorldSpacePositionForTileIndex(x);
+        var pos = _map.GetWorldSpacePositionForTileIndex((uint)x);
 
         pos.Should().Be(new Vector2(y[0], y[1]));
     }
