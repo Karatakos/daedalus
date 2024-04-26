@@ -23,15 +23,11 @@ public class TileMapDoorManagerTests
 
     [SetUp]
     public void Setup() {
-        
-
-        
-        
         _loggerFactory = LoggerFactory.Create((builder) => builder.AddSimpleConsole());
     }
 
     [Test]
-    public void DoorInstallForRoom() {
+    public void BullshitTest_CheckingRoundingIssueWhenScalingForMultipleRooms() {
         var opts = new JsonSerializerOptions();
 
         opts.Converters.Add(new JsonStringEnumConverter());
@@ -39,27 +35,92 @@ public class TileMapDoorManagerTests
 
         // 5x5 tiled room @ 32 px. p/ tile
         //
-        var room = new Room(
+        var roomA = new Room(
             new RoomBlueprint([
-                new Vector2F(0, 0),
-                new Vector2F(0, 64),     // Door Line A (index 1)
-                new Vector2F(0, 96),     // 
-                new Vector2F(0, 160),
-                new Vector2F(64, 160),   // Door Line B (index 4)
-                new Vector2F(96, 160),   //
-                new Vector2F(160, 160),
-                new Vector2F(160, 0)
+                new Vector2F(-5, -5),
+                new Vector2F(-5, 5),     
+                new Vector2F(0.9f, 5),     // Door Line A (index 1)
+                new Vector2F(1.9f, 5),     //
+                new Vector2F(5, 5),  
+                new Vector2F(5, -5)
             ]), RoomType.Normal, 1);
 
-        room.Boundary[1] = new BoundaryLine(room.Boundary[1].Start, room.Boundary[1].End, true, true);
-        room.Boundary[4] = new BoundaryLine(room.Boundary[4].Start, room.Boundary[4].End, true, true);
-
-        room.Doors.Add(new Door((room.Boundary[1].Start, room.Boundary[1].End), null));
-        room.Doors.Add(new Door((room.Boundary[4].Start, room.Boundary[4].End), null));
-
-        // 5x5 tile map 
+        // Mark/add door line
         //
-        var map = JsonSerializer.Deserialize<TiledMap>(Content.TileMapTemplate, opts);
+        roomA.Boundary[1] = new BoundaryLine(roomA.Boundary[1].Start, roomA.Boundary[1].End, true, true);
+        roomA.Doors.Add(new Door((roomA.Boundary[1].Start, roomA.Boundary[1].End), null));
+
+        var roomB = new Room(
+            new RoomBlueprint([
+                new Vector2F(1.9f, 5),      // Door Line A (index 0)
+                new Vector2F(0.9f, 5),      //
+                new Vector2F(-2.2f, 5),     
+                new Vector2F(-2.2f, 15),   
+                new Vector2F(7.8f, 15),  
+                new Vector2F(7.8f, 5)
+            ]), RoomType.Normal, 1);
+
+        roomB.Boundary[0] = new BoundaryLine(roomB.Boundary[0].Start, roomB.Boundary[0].End, true, true);
+        roomB.Doors.Add(new Door((roomB.Boundary[0].Start, roomB.Boundary[0].End), null));
+
+        // Pretend we already have a map and a layout based on the above room dimensions
+        //
+        var mapCenter = new Vector2F(12.8f / 2, 20 / 2);
+        var layoutCenter = new Vector2F(1.4f, 5);
+
+        var mapCenterS = mapCenter * 32;
+        var layoutCenterS = layoutCenter * 32;
+
+        roomA.Scale(32);
+        roomA.Position = roomA.Position * 32; 
+        roomA.Translate(mapCenterS - layoutCenterS);
+
+        roomB.Scale(32);
+        roomB.Position = roomA.Position * 32; 
+        roomB.Translate(mapCenterS - layoutCenterS);
+
+        var rAtmpAABB = roomA.GetBoundingBox();
+        var rBtmpAABB = roomB.GetBoundingBox();
+
+        // Basic test to ensure scaling math is correct 
+        //
+        rAtmpAABB.Min.x.Should().BeGreaterThanOrEqualTo(0);
+        rAtmpAABB.Min.y.Should().BeGreaterThanOrEqualTo(0);
+
+        rBtmpAABB.Min.x.Should().BeGreaterThanOrEqualTo(0);
+        rBtmpAABB.Min.y.Should().BeGreaterThanOrEqualTo(0);
+    }
+
+    [Test]
+    public void DoorInstallForRoomWithNorthWall() {
+        var opts = new JsonSerializerOptions();
+
+        opts.Converters.Add(new JsonStringEnumConverter());
+        opts.PropertyNameCaseInsensitive = true;
+
+        // 5x5 tiled room @ 32 px. p/ tile
+        //
+        var roomA = new Room(
+            new RoomBlueprint([
+                new Vector2F(-5, -5),
+                new Vector2F(-5, 5),     
+                new Vector2F(0.9f, 5),     // Door Line A (index 2); Wall-North; Line-East
+                new Vector2F(1.9f, 5),     //
+                new Vector2F(5, 5),  
+                new Vector2F(5, -5)
+            ]), RoomType.Normal, 1);
+
+        // Mark/add door line
+        //
+        roomA.Boundary[2] = new BoundaryLine(roomA.Boundary[2].Start, roomA.Boundary[2].End, true, true);
+        roomA.Doors.Add(new Door((roomA.Boundary[2].Start, roomA.Boundary[2].End), null));
+        
+        roomA.Scale(32);
+        roomA.Translate(new Vector2F(5 * 32, 5 * 32) - roomA.GetCenter());
+
+        // 10x10 tile map room template
+        //
+        var map = JsonSerializer.Deserialize<TiledMap>(Content.TileMapTemplate10x10, opts);
     
         var tilesets = new Dictionary<string, TiledSet>() {
             { 
@@ -70,10 +131,56 @@ public class TileMapDoorManagerTests
 
         var doorMgr = new TiledMapDoorManager(_loggerFactory);
 
-        doorMgr.InstallDoors(map, tilesets.Values.ToList(), room, 1).Should().BeSuccess();
+        doorMgr.InstallDoors(map, tilesets, roomA, 1).Should().BeSuccess();
 
-        map.Layers[0].Data[10].Should().Be(2147483652); // Tileset tile 4 (West)
-        map.Layers[0].Data[2].Should().Be(35);          // Tileset tile 35 (North)
+        map.Layers[0].Data[5].Should().Be(36);          // Tileset tile 35 (North) + 1 (first GID) 
+
+        //File.WriteAllText("map.tilemap.json", JsonSerializer.Serialize<TiledMap>(map, opts));
+    }
+
+    [Test]
+    public void DoorInstallForRoomWithSouthWall() {
+        var opts = new JsonSerializerOptions();
+
+        opts.Converters.Add(new JsonStringEnumConverter());
+        opts.PropertyNameCaseInsensitive = true;
+
+        // 5x5 tiled room @ 32 px. p/ tile
+        //
+        var roomA = new Room(
+            new RoomBlueprint([
+                new Vector2F(-5, -5),
+                new Vector2F(-5, 5),
+                new Vector2F(5, 5),  
+                new Vector2F(5, -5),
+                new Vector2F(1.9f, -5),   // Door Line A (index 2); Wall-South; Line-West
+                new Vector2F(0.9f, -5)    //
+            ]), RoomType.Normal, 1);
+
+        // Mark/add door line
+        //
+        roomA.Boundary[4] = new BoundaryLine(roomA.Boundary[4].Start, roomA.Boundary[4].End, true, true);
+        roomA.Doors.Add(new Door((roomA.Boundary[4].Start, roomA.Boundary[4].End), null));
+        
+        roomA.Scale(32);
+        roomA.Translate(new Vector2F(5 * 32, 5 * 32) - roomA.GetCenter());
+
+        // 10x10 tile map room template
+        //
+        var map = JsonSerializer.Deserialize<TiledMap>(Content.TileMapTemplate10x10, opts);
+    
+        var tilesets = new Dictionary<string, TiledSet>() {
+            { 
+                "s-sq-desert-1.tileset.json", 
+                JsonSerializer.Deserialize<TiledSet>(Content.TileSetTemplate, opts) 
+            }
+        };
+
+        var doorMgr = new TiledMapDoorManager(_loggerFactory);
+
+        doorMgr.InstallDoors(map, tilesets, roomA, 1).Should().BeSuccess();
+
+        map.Layers[0].Data[95].Should().Be(1073741860);   // Tileset tile 35v (South) + 1 (first GID)
 
         //File.WriteAllText("map.tilemap.json", JsonSerializer.Serialize<TiledMap>(map, opts));
     }

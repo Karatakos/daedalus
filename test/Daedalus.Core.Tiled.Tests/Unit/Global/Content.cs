@@ -84,7 +84,53 @@ public static class Content {
         ]
         """;
 
-    public const string TileMapTemplate = 
+    public const string TileMapTemplate10x10 = 
+        """
+        { 
+            "compressionlevel":-1,
+            "height":10,
+            "infinite":false,
+            "layers":[
+                    {
+                        "data":[1, 2, 2, 2, 2, 2, 2, 2, 2, 3,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            9, 10, 10, 10, 10, 10, 10, 10, 10, 11,
+                            17, 18, 18, 18, 18, 18, 18, 18, 18, 19],
+                        "height":10,
+                        "id":1,
+                        "name":"Tile Layer 1",
+                        "opacity":1,
+                        "type":"tilelayer",
+                        "visible":true,
+                        "width":10,
+                        "x":0,
+                        "y":0
+                    }],
+            "nextlayerid":4,
+            "nextobjectid":15,
+            "orientation":"orthogonal",
+            "renderorder":"right-down",
+            "tiledversion":"1.8.5",
+            "tileheight":32,
+            "tilesets":[
+                    {
+                    "firstgid":1,
+                    "source":"tilesets/s-sq-desert-1.tileset.json"
+                    }],
+            "tilewidth":32,
+            "type":"map",
+            "version":"1.8",
+            "width":10
+        }
+        """;
+
+    public const string TileMapTemplate5x5 = 
         """
         { 
             "compressionlevel":-1,

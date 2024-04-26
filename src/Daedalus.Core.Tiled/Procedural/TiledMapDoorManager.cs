@@ -31,6 +31,107 @@ internal class TiledMapDoor {
     }
 }
 
+internal class DoorMarker {
+    internal Vector2 StartingPoint { get; set; }
+    internal CardinalDirection Direction { get; set; }
+    internal CardinalDirection WallDirection { get; set; }
+    internal uint Length { get; set; }
+
+    private DoorMarker(Vector2 startingPoint, CardinalDirection direction, CardinalDirection wallDirection, uint length) {
+        StartingPoint = startingPoint;
+        Direction = direction;
+        WallDirection = wallDirection;
+        Length = length;
+    }
+
+    internal Vector2 GetStartingPointWithOffsetForTileGrid(uint tileWidth) {
+        var offset = new Vector2(0, 0);
+
+        switch (Direction) {
+            case CardinalDirection.North:
+                offset.Y += tileWidth;
+                break;
+
+            case CardinalDirection.West:
+                offset.X -= tileWidth;
+                break;
+        }
+
+        switch (WallDirection) {
+            case CardinalDirection.South:
+                offset.Y += tileWidth;
+                break;
+
+            case CardinalDirection.East:
+                offset.X -= tileWidth;
+                break;
+        }
+
+        return new Vector2(Math.Max(StartingPoint.X + offset.X, 0), Math.Max(StartingPoint.Y + offset.Y, 0));
+    }
+
+    internal static Result<DoorMarker> FromLine((Vector2F, Vector2F) door, Vector2F relativeToVec, uint tileWidth) {
+        Vector2 dirVecNormalized = Vector2F.Normalize(door.Item2 - door.Item1).ToVector2();
+        Vector2 startingPoint = door.Item1.ToVector2();
+        Vector2 relativeToVec2 = relativeToVec.ToVector2();
+
+        var direction = CardinalDirection.Other;
+        var roomWall = CardinalDirection.Other;
+
+        if (dirVecNormalized.X == 0 & dirVecNormalized.Y == 1)
+            direction = CardinalDirection.North;
+
+        if (dirVecNormalized.X == 0 & dirVecNormalized.Y == -1)
+            direction = CardinalDirection.South;
+
+        if (dirVecNormalized.X == 1 & dirVecNormalized.Y == 0)
+            direction = CardinalDirection.East;
+
+        if (dirVecNormalized.X == -1 & dirVecNormalized.Y == 0)
+            direction = CardinalDirection.West;
+
+        if(direction == CardinalDirection.Other)
+            return Result.Fail(new TiledMapDoorInstallerValidationError(
+                "Doors must be at 0, 90, 180, 270 degs"));
+
+        // Figure out which side of the room the wall is on
+        // 
+        switch (direction) {
+            // East or West since the line points north or south
+            //
+            case CardinalDirection.North:
+            case CardinalDirection.South: 
+                if (startingPoint.X > relativeToVec2.X)
+                    roomWall = CardinalDirection.East;
+                else
+                    roomWall = CardinalDirection.West;
+                break;
+
+            // North or south since the line points east or west
+            //
+            case CardinalDirection.East:
+            case CardinalDirection.West: 
+                if (startingPoint.Y > relativeToVec2.Y)
+                    roomWall = CardinalDirection.North;
+                else
+                    roomWall = CardinalDirection.South;
+                break;
+        }
+
+        if(direction == CardinalDirection.Other)
+            return Result.Fail(new TiledMapDoorInstallerValidationError(
+                "Could not figure out which side of the room your door is on please check door lines via Dungen logs"));
+
+        // TODO: If we trust Dungen then pass it in from props so we avoid this math.
+        //       Otherwise, width or height??
+        //
+        var tileLength = (uint)Math.Round(
+            Vector2F.Magnitude(door.Item2 - door.Item1)) / tileWidth;
+
+        return new DoorMarker(startingPoint, direction, roomWall, tileLength);
+    }
+}
+
 internal class TiledMapDoorManager {
     private readonly ILogger _logger;
     private readonly ILoggerFactory _loggerFactory; 
@@ -48,23 +149,24 @@ internal class TiledMapDoorManager {
 
     internal Result InstallDoors(
         TiledMap map, 
-        List<TiledSet> tileSets,
+        Dictionary<string, TiledSet> tileSets,
         Room room,
         int minTileDistanceToCorner) {
 
         if (_doorTiles.Count == 0)
-            CacheDoorTilesForEachCardinalDirection(tileSets);
+            CacheDoorTilesForEachCardinalDirection(map, tileSets);
 
         if (minTileDistanceToCorner < 1)
             return Result.Fail(
                 new TiledMapDoorInstallerValidationError(
                     "Door installation parameter validation failed. Door must be at least 1 tile away from the edge of a room."));
 
-        foreach (BoundaryLine line in room.Boundary) {
-            if (!line.IsDoor)
-                continue;
-
-            var res = InstallDoor(map, line, room.GetCenter());
+        foreach (Door door in room.Doors) {
+            var marker = DoorMarker.FromLine(door.Position, room.GetCenter(), map.TileWidth);
+            if (marker.IsFailed)
+                return Result.Fail(marker.Errors);
+            
+            var res = InstallDoor(map, marker.Value);
             if (res.IsFailed)
                 return Result.Fail(res.Errors);
         }
@@ -74,25 +176,13 @@ internal class TiledMapDoorManager {
 
     private Result InstallDoor(
         TiledMap map, 
-        BoundaryLine doorLine,
-        Vector2F roomCenter) {
+        DoorMarker marker) {
 
         if (_doorTiles.Count == 0)
             return Result.Fail(new TiledMapDoorInstallerValidationError(
                 "No doors found in tile sets referenced by this map"));
 
-        var dir = GetDoorDirectionRelativeToRoomCenter(doorLine, roomCenter);
-        if(dir == CardinalDirection.Other)
-            return Result.Fail(new TiledMapDoorInstallerValidationError(
-                "Door location not supported. Doors must be on parallel lines at 0, 90, 180, 270 degs"));
-
-        var doorTiles = _doorTiles[dir].ToArray();
-
-        // TODO: If we trust Dungen then pass it in from props so we avoid this math.
-        //       Otherwise, width or height??
-        //
-        var doorLengthInTiles = Utility.ConvertToUInt(
-                Vector2F.Magnitude(doorLine.GetDirection())) / map.TileWidth;
+        var doorTiles = _doorTiles[marker.WallDirection].ToArray();
 
         // Algorithm
         // 
@@ -105,7 +195,7 @@ internal class TiledMapDoorManager {
         //          Get corresponding door tile from array 
         //          Populate gid at index
 
-        if (doorLengthInTiles > doorTiles.Length)
+        if (marker.Length > doorTiles.Length)
             return Result.Fail(new TiledMapDoorInstallerValidationError(
                 "Door marker length in tiles is longer than the door tiles in the map's tile set"));
 
@@ -115,65 +205,55 @@ internal class TiledMapDoorManager {
         //
         uint sourceTileLid = doorTiles.Where(t => t.IsFirstTile).Select(t => t.Lid).First();  
 
-        // Find a starting coordinate for our door. We only work with coords here, after which we can
-        // infer next tile  by direction.  
+        // Applies an offset to account for otherwise invalid tile positions due to a door's line direction
         //
-        // Algo
-        //  
-        //  1. Flip the y coordinate. Tile space is right-down where as Dungen layout space is right-up
-        //  2. South & East wall coord adjustment: x-32, y-32
-        //  3. West wall coord adjustment: x, y-32
-        //
-        var flippedDoorVec = new Vector2F(doorLine.Start.x, (map.Height * map.TileHeight) - doorLine.Start.y);
-        switch (dir) {
-            case CardinalDirection.South:
-            case CardinalDirection.East:
-                flippedDoorVec = new Vector2F(Math.Max(flippedDoorVec.x - 32, 0), Math.Max(flippedDoorVec.y - 32, 0));
-                break;
+        var startingPoint = marker.GetStartingPointWithOffsetForTileGrid(map.TileWidth);
 
-            case CardinalDirection.West:
-                flippedDoorVec = new Vector2F(flippedDoorVec.x, Math.Max(flippedDoorVec.y - 32, 0));
-                break;
-        }
+        // Dungen layout axis points up and to the right where as a tile grid corrds are handled down and 
+        // and to the right. Hence we need to flip on Y to get the tile grid coord. 
+        //
+        // TODO: Is there a reason GetTileIndexContainingWorldSpacePosition can't use up and right?  
+        //
+        var startingPointTileGrid = new Vector2(startingPoint.X, (map.Height * map.TileHeight) - startingPoint.Y);
 
         // Grab the world map starting tile from the start of our line
         // 
-        uint targetTileIndex = map.GetTileIndexContainingWorldSpacePosition(flippedDoorVec.ToVector2());
+        uint targetTileIndex = map.GetTileIndexContainingWorldSpacePosition(startingPointTileGrid);
 
         uint sourceTilesetWidth = _doorTileSet.Columns;
         uint sourceTilesetHeight = _doorTileSet.TileCount / _doorTileSet.Columns;
 
-        for (int i=0; i<doorLengthInTiles; i++) {
+        for (int i=0; i<marker.Length; i++) {
             UpdateMapTileIndexRecursively(
                 sourceTileLid, 
                 doorTiles, 
                 sourceTilesetWidth, 
                 sourceTilesetHeight, 
-                dir, 
+                marker.WallDirection, 
                 targetTileIndex, 
                 map);
             
             // Calculate next source and destination tile indexes 
             //
-            switch (dir) {
-                case CardinalDirection.North:
-                    sourceTileLid ++;
-                    targetTileIndex ++;             // Door line dir: right
+            switch (marker.Direction) {
+                case CardinalDirection.North:           // East or West wall
+                    sourceTileLid += sourceTilesetWidth;
+                    targetTileIndex -= map.Width;            
                     break;
 
                 case CardinalDirection.South:
-                    sourceTileLid ++;
-                    targetTileIndex --;             // Door line dir: left
+                    sourceTileLid += sourceTilesetWidth;
+                    targetTileIndex += map.Width;           
                     break;
 
-                case CardinalDirection.East:
-                    sourceTileLid += sourceTilesetWidth;
-                    targetTileIndex += map.Width;   // Door line dir: down
+                case CardinalDirection.East:            // North or South wall
+                    sourceTileLid ++;
+                    targetTileIndex --;   
                     break;
 
                 case CardinalDirection.West:
-                    sourceTileLid += sourceTilesetWidth;
-                    targetTileIndex -= map.Width;   // Door line dir: up
+                    sourceTileLid ++;
+                    targetTileIndex ++;  
                     break;
             }
         }
@@ -186,7 +266,7 @@ internal class TiledMapDoorManager {
         TiledMapDoor[] sourceTiles,
         uint sourceTilesetHeight, 
         uint sourceTilesetWidth,
-        CardinalDirection dir,
+        CardinalDirection doorOnRoomSide,
         uint targetTile, 
         TiledMap map) {
 
@@ -211,6 +291,8 @@ internal class TiledMapDoorManager {
         //
         layer.Data[targetTile] = doorTile.Gid;
 
+        _logger.LogDebug($"Updated map tile index {targetTile} on layer {layer.Id} for door source tile gid {doorTile.Gid}");
+
         var newSourceTile = sourceTile;
         var newTargetTile = targetTile;
 
@@ -219,8 +301,8 @@ internal class TiledMapDoorManager {
         // TODO: Check values for uint if we go into negtive. Should only happen if silly doors
         //       cover the map end to end, e.g. mistake, but we should test for it.
         //
-        switch (dir) {
-            case CardinalDirection.North:
+        switch (doorOnRoomSide) {
+            case CardinalDirection.North:           
                 sourceTile += sourceTilesetWidth;
                 targetTile += map.Width;
                 break;
@@ -252,19 +334,23 @@ internal class TiledMapDoorManager {
             sourceTiles, 
             sourceTilesetWidth, 
             sourceTilesetHeight, 
-            dir, 
+            doorOnRoomSide, 
             targetTile, 
             map);
     }
 
     private Result CacheDoorTilesForEachCardinalDirection(
-        List<TiledSet> tilesets) {
+        TiledMap map,
+        Dictionary<string, TiledSet> tilesets) {
 
-        foreach (TiledSet ts in tilesets) {
+        foreach (KeyValuePair<string, TiledSet> kvp in tilesets) {
+            var source = kvp.Key;
+            var ts = kvp.Value;
+            
             foreach (TiledSetTile t in ts.Tiles) {
                 bool isFirstTile = false;
                 bool isDoor = false;
-                CardinalDirection dir = CardinalDirection.Other;
+                CardinalDirection doorOnRoomSide = CardinalDirection.Other;
 
                 foreach (TiledProperty p in t.Properties) {
                     if (p.Name == "Type")
@@ -274,7 +360,7 @@ internal class TiledMapDoorManager {
                         isFirstTile = p.Value == "true";
 
                     if (p.Name == "Direction") {
-                        if (!Enum.TryParse<CardinalDirection>(p.Value, out dir))
+                        if (!Enum.TryParse<CardinalDirection>(p.Value, out doorOnRoomSide))
                             return Result.Fail(new TiledMapDoorInstallerValidationError(
                                 "Incorrect value for Direction property. Should be North, South, East or West"));
                     }
@@ -283,25 +369,30 @@ internal class TiledMapDoorManager {
                 if (!isDoor)
                     continue;
 
-                if (!_doorTiles.ContainsKey(dir))     
-                    _doorTiles.Add(dir, new List<TiledMapDoor>());
+                if (!_doorTiles.ContainsKey(doorOnRoomSide))     
+                    _doorTiles.Add(doorOnRoomSide, new List<TiledMapDoor>());
+
+                // Get first Gid for this tile
+                //
+                var firstGid = map.TileSets.First(kvp => Path.GetFileName(kvp.Source) == source).FirstGid;
+                var tileGid = firstGid + t.Id;
 
                 // Gid is just the local tile index since there is no transform to apply
                 //
-                _doorTiles[dir].Add(new TiledMapDoor(t.Id, t.Id, isFirstTile));
+                _doorTiles[doorOnRoomSide].Add(new TiledMapDoor(t.Id, tileGid, isFirstTile));
 
                 // Generate a door for the opposite direction.
                 //
                 // Context: We only need daws drawn for two directions on the tile sheet since we can
                 // flip the tiles to get the opposite direction gids automatically
                 //
-                switch (dir) {
+                switch (doorOnRoomSide) {
                     case CardinalDirection.North: 
                         if (!_doorTiles.ContainsKey(CardinalDirection.South))     
                             _doorTiles.Add(CardinalDirection.South, new List<TiledMapDoor>());
 
                         _doorTiles[CardinalDirection.South].Add(
-                            new TiledMapDoor(t.Id, t.Id | Constants.FLIPPED_VERTICALLY_FLAG, isFirstTile));
+                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_VERTICALLY_FLAG, isFirstTile));
                         break;
 
                     case CardinalDirection.South: 
@@ -309,7 +400,7 @@ internal class TiledMapDoorManager {
                             _doorTiles.Add(CardinalDirection.North, new List<TiledMapDoor>());
 
                         _doorTiles[CardinalDirection.North].Add(
-                            new TiledMapDoor(t.Id, t.Id | Constants.FLIPPED_VERTICALLY_FLAG, isFirstTile));
+                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_VERTICALLY_FLAG, isFirstTile));
                         break;
 
                     case CardinalDirection.East: 
@@ -317,7 +408,7 @@ internal class TiledMapDoorManager {
                             _doorTiles.Add(CardinalDirection.West, new List<TiledMapDoor>());
 
                         _doorTiles[CardinalDirection.West].Add(
-                            new TiledMapDoor(t.Id, t.Id | Constants.FLIPPED_HORIZONTALLY_FLAG, isFirstTile));
+                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG, isFirstTile));
                         break;
 
                     case CardinalDirection.West: 
@@ -325,7 +416,7 @@ internal class TiledMapDoorManager {
                             _doorTiles.Add(CardinalDirection.East, new List<TiledMapDoor>());
 
                         _doorTiles[CardinalDirection.East].Add(
-                            new TiledMapDoor(t.Id, t.Id | Constants.FLIPPED_HORIZONTALLY_FLAG, isFirstTile));
+                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG, isFirstTile));
                         break;
 
                     default:
@@ -353,29 +444,6 @@ internal class TiledMapDoorManager {
         }
 
         return Result.Ok();
-    }
-
-    private CardinalDirection GetDoorDirectionRelativeToRoomCenter(BoundaryLine door, Vector2F relativeToVec) {
-        var dirVecNormalized = Vector2F.Normalize(door.GetDirection());
-
-        CardinalDirection dir = CardinalDirection.Other;
-        // East or West wall since the line points north or south
-        //
-        if (Math.Abs(dirVecNormalized.x) == 0 && Math.Abs(dirVecNormalized.y) == 1) 
-            if (door.Start.x < relativeToVec.x)
-                dir = CardinalDirection.West;
-            else
-                dir = CardinalDirection.East;
-            
-        // North or south wall since the line points east or west
-        //
-        else if (Math.Abs(dirVecNormalized.x) == 1 && Math.Abs(dirVecNormalized.y) == 0)
-            if (door.Start.y < relativeToVec.y)
-                dir = CardinalDirection.South;
-            else
-                dir = CardinalDirection.North;
-
-            return dir;
     }
 }
 

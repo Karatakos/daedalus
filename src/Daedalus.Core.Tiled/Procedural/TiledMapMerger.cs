@@ -31,6 +31,8 @@ internal class TiledMapMerger
         TiledMap source,
         Vector2 position,
         uint emptyGid) {
+        
+        _logger.LogDebug($"\nMerging room template map into world map starting at room position {position}");
 
         // For tile layers a caller may need to know which tiles of the destination map were touched
         //
@@ -165,11 +167,15 @@ internal class TiledMapMerger
         TiledMap source, 
         Vector2 position) {
 
+        _logger.LogDebug($"\nMerging source layer into map layer {destinationLayer.Id}");
+
         for (uint j = 0; j < sourceLayer.Data.Length; j++) {
             var localpos = source.GetWorldSpacePositionForTileIndex(j);
             var worldTileIndex = destination.GetTileIndexContainingWorldSpacePosition(position + localpos);
 
             destinationLayer.Data[worldTileIndex] = sourceLayer.Data[j];
+
+            _logger.LogDebug($"Writing source tile gid {sourceLayer.Data[j]} to tile index {worldTileIndex}");
 
             if (!DirtyTileIndices.Contains(worldTileIndex))
                 DirtyTileIndices.Add(worldTileIndex);

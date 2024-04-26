@@ -15,8 +15,10 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        var loggerFactory = LoggerFactory.Create((builder) => 
-            builder.AddSimpleConsole(options => options.SingleLine = true));
+        var loggerFactory = LoggerFactory.Create((builder) => {
+            builder.AddSimpleConsole(options => options.SingleLine = true);
+            builder.SetMinimumLevel(LogLevel.Debug);
+        });
 
         var logger = loggerFactory.CreateLogger<Program>();
 
