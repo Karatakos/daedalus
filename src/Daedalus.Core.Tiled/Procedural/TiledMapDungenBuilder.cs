@@ -61,53 +61,30 @@ public class TiledMapDungenBuilder
     }   
 
     private Result<TiledMapDungen> BuildMap(
-        DungenLayout layout, 
+        Layout layout, 
         Dictionary<string, TiledMapGraphRoomBlueprintContent> blueprints,
         Dictionary<string, TiledMap> templates,
         Dictionary<string, TiledSet> tilesets,
         TiledMapDungenBuilderProps props) {
 
+        layout.SnapToGrid();
+
         uint tileWidth = props.TileWidth;
         uint tileHeight = props.TileHeight;
 
-        // Start: This should be a Dungen responsibility, we want a layout back that is already snapped to grid
-
-        float maxX = -100000;
-        float maxY = -100000;
-        float minX = 100000;
-        float minY = 100000;
-
-        foreach (Room room in layout.Rooms) {
-            room.SnapToGrid();
-
-            AABB2F rBoundingBox = room.GetBoundingBox();
-            maxX = Math.Max(maxX, rBoundingBox.Max.x);
-            maxY = Math.Max(maxY, rBoundingBox.Max.y);
-            minX = Math.Min(minX, rBoundingBox.Min.x);
-            minY = Math.Min(minY, rBoundingBox.Min.y);
-        }
-
-        var width = (uint)Math.Round(Math.Abs(maxX - minX), MidpointRounding.AwayFromZero);
-        var height = (uint)Math.Round(Math.Abs(maxY - minY), MidpointRounding.AwayFromZero);
-
-        var center = new Vector2F((maxX + minX) / 2, (maxY + minY) / 2);
-        var bb = new AABB2F(new Vector2F(minX, minY), new Vector2F(maxX, maxY)); 
-
-        // End
-
         var map = new TiledMapDungen(
-            width,
-            height,
+            (uint)layout.Width,
+            (uint)layout.Height,
             tileWidth,
             tileHeight);
 
-        var mapCenterS = new Vector2F(width * tileWidth / 2, height * tileHeight / 2);
-        var layoutCenterS = center * tileWidth;
+        var mapCenterS = new Vector2F(layout.Width * tileWidth / 2, layout.Height * tileHeight / 2);
+        var layoutCenterS = layout.Center * tileWidth;
         
         var templateMerger = new TiledMapMerger(_loggerFactory);
         var doorManager = new TiledMapDoorManager(_loggerFactory);
 
-        foreach (Room room in layout.Rooms) {
+        foreach (Room room in layout.Rooms.Values) {
             // Grab a random template that fits one of the room's blueprints
             //
             var template = GetRandomTiledMapForRoom(room, blueprints, templates);
@@ -115,7 +92,6 @@ public class TiledMapDungenBuilder
             // Start by scaling the room by tile size since rooms are defined in tile units
             //
             room.Scale(tileWidth);
-            room.Position = room.Position * tileWidth;  // BUG: Scale method should handle this
 
             // Move the room to map space using map center
             //
@@ -147,7 +123,7 @@ public class TiledMapDungenBuilder
             // Keep track of tile indices p/room for easy tile->room lookup for map consumers
             //
             var tiledRoom = new TiledMapDungenRoom(room.Number, DungenToTiledDungenRoomType(room.Type));
-            tiledRoom.AccessibleRooms.AddRange(room.Doors.Select(x => x.ConnectingRoom.Number));
+            tiledRoom.AccessibleRooms.AddRange(room.Doors.Select(x => x.ConnectingRoomNumber));
             tiledRoom.TileIndices.AddRange(templateMerger.DirtyTileIndices);
 
             map.Rooms.Add(tiledRoom);

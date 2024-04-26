@@ -48,7 +48,7 @@ public class TileMapDoorManagerTests
         // Mark/add door line
         //
         roomA.Boundary[1] = new BoundaryLine(roomA.Boundary[1].Start, roomA.Boundary[1].End, true, true);
-        roomA.Doors.Add(new Door((roomA.Boundary[1].Start, roomA.Boundary[1].End), null));
+        roomA.Doors.Add(new Door(new Line(roomA.Boundary[1]), 1));
 
         var roomB = new Room(
             new RoomBlueprint([
@@ -58,10 +58,10 @@ public class TileMapDoorManagerTests
                 new Vector2F(-2.2f, 15),   
                 new Vector2F(7.8f, 15),  
                 new Vector2F(7.8f, 5)
-            ]), RoomType.Normal, 1);
+            ]), RoomType.Normal, 2);
 
         roomB.Boundary[0] = new BoundaryLine(roomB.Boundary[0].Start, roomB.Boundary[0].End, true, true);
-        roomB.Doors.Add(new Door((roomB.Boundary[0].Start, roomB.Boundary[0].End), null));
+        roomB.Doors.Add(new Door(new Line(roomB.Boundary[0]), 2));
 
         // Pretend we already have a map and a layout based on the above room dimensions
         //
@@ -113,7 +113,7 @@ public class TileMapDoorManagerTests
         // Mark/add door line
         //
         roomA.Boundary[2] = new BoundaryLine(roomA.Boundary[2].Start, roomA.Boundary[2].End, true, true);
-        roomA.Doors.Add(new Door((roomA.Boundary[2].Start, roomA.Boundary[2].End), null));
+        roomA.Doors.Add(new Door(new Line(roomA.Boundary[2]), 1));
         
         roomA.Scale(32);
         roomA.Translate(new Vector2F(5 * 32, 5 * 32) - roomA.GetCenter());
@@ -160,7 +160,7 @@ public class TileMapDoorManagerTests
         // Mark/add door line
         //
         roomA.Boundary[4] = new BoundaryLine(roomA.Boundary[4].Start, roomA.Boundary[4].End, true, true);
-        roomA.Doors.Add(new Door((roomA.Boundary[4].Start, roomA.Boundary[4].End), null));
+        roomA.Doors.Add(new Door(new Line(roomA.Boundary[4]), 1));
         
         roomA.Scale(32);
         roomA.Translate(new Vector2F(5 * 32, 5 * 32) - roomA.GetCenter());

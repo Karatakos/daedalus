@@ -70,9 +70,9 @@ internal class DoorMarker {
         return new Vector2(Math.Max(StartingPoint.X + offset.X, 0), Math.Max(StartingPoint.Y + offset.Y, 0));
     }
 
-    internal static Result<DoorMarker> FromLine((Vector2F, Vector2F) door, Vector2F relativeToVec, uint tileWidth) {
-        Vector2 dirVecNormalized = Vector2F.Normalize(door.Item2 - door.Item1).ToVector2();
-        Vector2 startingPoint = door.Item1.ToVector2();
+    internal static Result<DoorMarker> FromLine(Line door, Vector2F relativeToVec, uint tileWidth) {
+        Vector2 dirVecNormalized = Vector2F.Normalize(door.End - door.Start).ToVector2();
+        Vector2 startingPoint = door.Start.ToVector2();
         Vector2 relativeToVec2 = relativeToVec.ToVector2();
 
         var direction = CardinalDirection.Other;
@@ -126,7 +126,7 @@ internal class DoorMarker {
         //       Otherwise, width or height??
         //
         var tileLength = (uint)Math.Round(
-            Vector2F.Magnitude(door.Item2 - door.Item1)) / tileWidth;
+            Vector2F.Magnitude(door.GetDirection())) / tileWidth;
 
         return new DoorMarker(startingPoint, direction, roomWall, tileLength);
     }
@@ -162,7 +162,7 @@ internal class TiledMapDoorManager {
                     "Door installation parameter validation failed. Door must be at least 1 tile away from the edge of a room."));
 
         foreach (Door door in room.Doors) {
-            var marker = DoorMarker.FromLine(door.Position, room.GetCenter(), map.TileWidth);
+            var marker = DoorMarker.FromLine(door.Marker, room.GetCenter(), map.TileWidth);
             if (marker.IsFailed)
                 return Result.Fail(marker.Errors);
             

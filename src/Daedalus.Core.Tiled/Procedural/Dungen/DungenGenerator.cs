@@ -23,7 +23,7 @@ public class DungenGenerator {
     *  Important: CPU and time intensive and so run on a seperate [threadpool] thread
     *
     */
-    public async Task<Result<DungenLayout>> GenerateAsync(
+    public async Task<Result<Layout>> GenerateAsync(
         TiledMapContent inputGraph,
         TiledMapDungenBuilderProps inputProps) {
 
@@ -99,7 +99,7 @@ public class DungenGenerator {
         };
     }
 
-    private Result<DungenLayout> GenerateDungenLayout(DungenGeneratorProps props) {
+    private Result<Layout> GenerateDungenLayout(DungenGeneratorProps props) {
         Dungen.DungenGenerator generator = new(props);
 
         // Compute config spaces, validate planar graph, etc.
@@ -114,8 +114,6 @@ public class DungenGenerator {
             return Result.Fail(new DungenSolutioNotFoundError());
         }
         
-        // Warning: Not a clone
-        //
         return generator.Vend();
     }
 }
