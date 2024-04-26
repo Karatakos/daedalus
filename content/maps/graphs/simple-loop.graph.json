@@ -2,11 +2,18 @@
 	"label": "simple-loop",
 	"rooms": [
 		{ "number": 0, "definition": "entrance" },
-		{ "number": 1, "definition": "normal" }
+		{ "number": 1, "definition": "normal" },
+        { "number": 2, "definition": "normal" },
+        { "number": 3, "definition": "normal" },
+        { "number": 4, "definition": "exit" }
 	],
 
 	"connections": [
-		{ "from": 0, "to": 1 }
+		{ "from": 0, "to": 1 },
+        { "from": 1, "to": 2 },
+        { "from": 1, "to": 3 },
+        { "from": 2, "to": 3 },
+        { "from": 3, "to": 4 }
 	]
 }
 

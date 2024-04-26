@@ -87,8 +87,8 @@ public class TiledMapDungenBuilder
             minY = Math.Min(minY, rBoundingBox.Min.y);
         }
 
-        var width = (uint)Math.Round(Math.Abs(maxX - minX));
-        var height = (uint)Math.Round(Math.Abs(maxY - minY));
+        var width = (uint)Math.Round(Math.Abs(maxX - minX), MidpointRounding.AwayFromZero);
+        var height = (uint)Math.Round(Math.Abs(maxY - minY), MidpointRounding.AwayFromZero);
 
         var center = new Vector2F((maxX + minX) / 2, (maxY + minY) / 2);
         var bb = new AABB2F(new Vector2F(minX, minY), new Vector2F(maxX, maxY)); 
