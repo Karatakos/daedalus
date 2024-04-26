@@ -180,7 +180,7 @@ public class TileMapDoorManagerTests
 
         doorMgr.InstallDoors(map, tilesets, roomA, 1).Should().BeSuccess();
 
-        map.Layers[0].Data[95].Should().Be(1073741860);   // Tileset tile 35v (South) + 1 (first GID)
+        map.Layers[0].Data[95].Should().Be(2684354565);   // Tileset tile 35v (South) + 1 (first GID)
 
         //File.WriteAllText("map.tilemap.json", JsonSerializer.Serialize<TiledMap>(map, opts));
     }

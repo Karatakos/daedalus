@@ -350,7 +350,7 @@ internal class TiledMapDoorManager {
             foreach (TiledSetTile t in ts.Tiles) {
                 bool isFirstTile = false;
                 bool isDoor = false;
-                CardinalDirection doorOnRoomSide = CardinalDirection.Other;
+                CardinalDirection wall = CardinalDirection.Other;
 
                 foreach (TiledProperty p in t.Properties) {
                     if (p.Name == "Type")
@@ -360,7 +360,7 @@ internal class TiledMapDoorManager {
                         isFirstTile = p.Value == "true";
 
                     if (p.Name == "Direction") {
-                        if (!Enum.TryParse<CardinalDirection>(p.Value, out doorOnRoomSide))
+                        if (!Enum.TryParse<CardinalDirection>(p.Value, out wall))
                             return Result.Fail(new TiledMapDoorInstallerValidationError(
                                 "Incorrect value for Direction property. Should be North, South, East or West"));
                     }
@@ -369,8 +369,8 @@ internal class TiledMapDoorManager {
                 if (!isDoor)
                     continue;
 
-                if (!_doorTiles.ContainsKey(doorOnRoomSide))     
-                    _doorTiles.Add(doorOnRoomSide, new List<TiledMapDoor>());
+                if (!_doorTiles.ContainsKey(wall))     
+                    _doorTiles.Add(wall, new List<TiledMapDoor>());
 
                 // Get first Gid for this tile
                 //
@@ -379,50 +379,7 @@ internal class TiledMapDoorManager {
 
                 // Gid is just the local tile index since there is no transform to apply
                 //
-                _doorTiles[doorOnRoomSide].Add(new TiledMapDoor(t.Id, tileGid, isFirstTile));
-
-                // Generate a door for the opposite direction.
-                //
-                // Context: We only need daws drawn for two directions on the tile sheet since we can
-                // flip the tiles to get the opposite direction gids automatically
-                //
-                switch (doorOnRoomSide) {
-                    case CardinalDirection.North: 
-                        if (!_doorTiles.ContainsKey(CardinalDirection.South))     
-                            _doorTiles.Add(CardinalDirection.South, new List<TiledMapDoor>());
-
-                        _doorTiles[CardinalDirection.South].Add(
-                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_VERTICALLY_FLAG, isFirstTile));
-                        break;
-
-                    case CardinalDirection.South: 
-                        if (!_doorTiles.ContainsKey(CardinalDirection.North))     
-                            _doorTiles.Add(CardinalDirection.North, new List<TiledMapDoor>());
-
-                        _doorTiles[CardinalDirection.North].Add(
-                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_VERTICALLY_FLAG, isFirstTile));
-                        break;
-
-                    case CardinalDirection.East: 
-                        if (!_doorTiles.ContainsKey(CardinalDirection.West))     
-                            _doorTiles.Add(CardinalDirection.West, new List<TiledMapDoor>());
-
-                        _doorTiles[CardinalDirection.West].Add(
-                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG, isFirstTile));
-                        break;
-
-                    case CardinalDirection.West: 
-                        if (!_doorTiles.ContainsKey(CardinalDirection.East))     
-                            _doorTiles.Add(CardinalDirection.East, new List<TiledMapDoor>());
-
-                        _doorTiles[CardinalDirection.East].Add(
-                            new TiledMapDoor(t.Id, tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG, isFirstTile));
-                        break;
-
-                    default:
-                        return Result.Fail(new TiledMapDoorInstallerValidationError(
-                            "Ensure Direction property is set for each door tile"));
-                }
+                _doorTiles[wall].Add(new TiledMapDoor(t.Id, tileGid, isFirstTile));
             }
 
             // Break if we've processed doors from this tileset. We're done.
@@ -432,11 +389,43 @@ internal class TiledMapDoorManager {
             //          would require a bigger overhaul incl. significant work in the tilemap merger.
             //
             if (_doorTiles.Count > 0) { 
+
+                // We only need door tiles for two directions (N and E) on the tile sheet.
+                // For S we rotate E by flipping horizontally then diagonally)
+                // For W we flip E horizontally
+                //
+                // TODO: This is very specific to a single use case -- come up with a flexibile system
+                //
+                if (!_doorTiles.ContainsKey(CardinalDirection.North) || !_doorTiles.ContainsKey(CardinalDirection.East))
+                    return Result.Fail(new TiledMapDoorInstallerValidationError(
+                        "North or East facing door's have not been defined in the tileset -- though South and West can be dynamically added, North and East are mandatory"));
+
+                if (!_doorTiles.ContainsKey(CardinalDirection.West)) {
+                    _doorTiles.Add(CardinalDirection.West, new List<TiledMapDoor>());
+
+                    foreach (TiledMapDoor d in _doorTiles[CardinalDirection.East]) {
+                        _doorTiles[CardinalDirection.West].Add(
+                            new TiledMapDoor(d.Lid, d.Gid | Constants.FLIPPED_HORIZONTALLY_FLAG, d.IsFirstTile));
+                    }
+                }
+
+                if (!_doorTiles.ContainsKey(CardinalDirection.South)) {
+                    _doorTiles.Add(CardinalDirection.South, new List<TiledMapDoor>());
+
+                    foreach (TiledMapDoor d in _doorTiles[CardinalDirection.East]) {
+                        _doorTiles[CardinalDirection.South].Add(
+                            new TiledMapDoor(
+                                d.Lid, 
+                                d.Gid | Constants.FLIPPED_HORIZONTALLY_FLAG | Constants.FLIPPED_DIAGONALLY_FLAG, 
+                                d.IsFirstTile));
+                    }
+                }
+
                 // Make sure we do have all doors.
                 //
                 if (_doorTiles.Count != 4)
                     return Result.Fail(new TiledMapDoorInstallerValidationError(
-                            "Please ensure doors for North OR South AND East OR West are including in the same tile set."));
+                        "Something went wrong. Ensure at a minimum NORTH AND EAST are including in the same tile set."));
                 
                 _doorTileSet = ts;
                 break;
