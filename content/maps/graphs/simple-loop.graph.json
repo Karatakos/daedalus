@@ -3,7 +3,7 @@
 	"rooms": [
 		{ "number": 0, "definition": "entrance" },
 		{ "number": 1, "definition": "normal" },
-        { "number": 2, "definition": "normal" },
+        { "number": 2, "definition": "arena" },
         { "number": 3, "definition": "normal" },
         { "number": 4, "definition": "exit" }
 	],

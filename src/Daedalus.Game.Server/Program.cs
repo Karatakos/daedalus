@@ -25,7 +25,7 @@ class Program
         logger.LogInformation("Generating a tile map...");
 
         string workingDir = Path.Combine(Directory.GetCurrentDirectory(), "../../content/maps");
-        string outputDir = Path.Combine(workingDir, "../tmp/tilemaps");
+        string outputDir = Path.Combine(workingDir, "../tmp/");
 
         TiledMapDungenBuilder builder = new TiledMapDungenBuilder(
             new LocalDiskContentProvider(

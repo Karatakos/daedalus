@@ -1,0 +1,97 @@
+{ "compressionlevel":-1,
+ "height":7,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[1, 2, 2, 2, 2, 2, 3,
+            9, 10, 10, 10, 10, 10, 11,
+            9, 10, 10, 10, 10, 10, 11,
+            9, 10, 10, 10, 10, 10, 11,
+            9, 10, 10, 10, 10, 10, 11,
+            9, 10, 10, 10, 10, 10, 11,
+            17, 18, 18, 18, 18, 18, 19],
+         "height":7,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "properties":[
+                {
+                 "name":"Test",
+                 "type":"string",
+                 "value":"true"
+                }],
+         "type":"tilelayer",
+         "visible":true,
+         "width":7,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":11,
+         "name":"Object Layer 1",
+         "objects":[
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":88.8831202543968,
+                 "y":120.864429878642
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":142.046855733662,
+                 "y":106.327470958531
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":119.618404828347,
+                 "y":144.123564150821
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":12,
+ "nextobjectid":12,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"Test",
+         "type":"string",
+         "value":"true"
+        }],
+ "renderorder":"right-down",
+ "tiledversion":"1.8.5",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"s-sq-desert-1.tileset.json"
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.8",
+ "width":7
+}

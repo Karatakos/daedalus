@@ -3,7 +3,7 @@
         "label": "entrance",
         "type": "Entrance",
         "blueprints": [
-            "s-sq-1"
+            "xs-sq-1"
         ]
     },
     {
@@ -11,14 +11,21 @@
         "type": "Normal",
         "blueprints": [
             "s-sq-1",
-            "s-sq-2"
+            "s-l-1"
+        ]
+    },
+    {
+        "label": "arena",
+        "type": "Normal",
+        "blueprints": [
+            "l-sq-1"
         ]
     },
     {
         "label": "exit",
         "type": "Exit",
         "blueprints": [
-            "s-sq-1"
+            "xs-sq-1"
         ]
     }
 ]
