@@ -19,15 +19,22 @@ internal enum CardinalDirection {
     Other
 }
 
+internal enum StartingTileDrawOrder {
+    First,
+    Last
+}
+
 internal class TiledMapDoor {
     internal uint Lid { get; private set; }
     internal uint Gid { get; private set; }
     internal bool IsFirstTile { get; private set; }
+    internal bool IsLastTile { get; private set; }
 
-    internal TiledMapDoor(uint lid, uint gid, bool isFirstTile = false) {
+    internal TiledMapDoor(uint lid, uint gid, bool isFirstTile = false, bool isLastTile = false) {
         Lid = lid;
         Gid = gid;
         IsFirstTile = isFirstTile;
+        IsLastTile = isLastTile;
     }
 }
 
@@ -137,6 +144,7 @@ internal class TiledMapDoorManager {
     private readonly ILoggerFactory _loggerFactory; 
     private Dictionary<CardinalDirection, List<TiledMapDoor>> _doorTiles;
     private TiledSet _doorTileSet;
+    private Dictionary<CardinalDirection, CardinalDirection> _doorTileTransformMap;
 
     internal TiledMapDoorManager(
         ILoggerFactory loggerFactory) {
@@ -145,6 +153,7 @@ internal class TiledMapDoorManager {
         _loggerFactory = loggerFactory;
 
         _doorTiles = new Dictionary<CardinalDirection, List<TiledMapDoor>>();
+        _doorTileTransformMap = new Dictionary<CardinalDirection, CardinalDirection>();
     }
 
     internal Result InstallDoors(
@@ -199,11 +208,20 @@ internal class TiledMapDoorManager {
             return Result.Fail(new TiledMapDoorInstallerValidationError(
                 "Door marker length in tiles is longer than the door tiles in the map's tile set"));
 
-        // Relying on first door tile to be marked up via property in the tile set
+        // Whether or not we start with the first or last door tile depends on the originating tile set wall 
+        // oritentation in relation to the door orientation. 
         //
-        // TODO: Is there a way of calculating this?
+        // Note: Relying on first and last door tile to be marked up via property in the tile set 
         //
-        uint sourceTileLid = doorTiles.Where(t => t.IsFirstTile).Select(t => t.Lid).First();  
+        var tileDrawOrder = GetTileDrawOrder(marker.Direction);
+        var sourceTile = doorTiles.Where(t => {
+                return tileDrawOrder == StartingTileDrawOrder.First ? t.IsFirstTile : t.IsLastTile; 
+            }).First();  
+        
+        // BUG: The above won't work as we need the last tile not the first tile where lines are reversed.
+        //  
+        //      How best can we do this? 
+        //
 
         // Applies an offset to account for otherwise invalid tile positions due to a door's line direction
         //
@@ -223,6 +241,8 @@ internal class TiledMapDoorManager {
         uint sourceTilesetWidth = _doorTileSet.Columns;
         uint sourceTilesetHeight = _doorTileSet.TileCount / _doorTileSet.Columns;
 
+        uint sourceTileLid = sourceTile.Lid;
+
         for (int i=0; i<marker.Length; i++) {
             UpdateMapTileIndexRecursively(
                 sourceTileLid, 
@@ -232,30 +252,9 @@ internal class TiledMapDoorManager {
                 marker.WallDirection, 
                 targetTileIndex, 
                 map);
-            
-            // Calculate next source and destination tile indexes 
-            //
-            switch (marker.Direction) {
-                case CardinalDirection.North:           // East or West wall
-                    sourceTileLid += sourceTilesetWidth;
-                    targetTileIndex -= map.Width;            
-                    break;
 
-                case CardinalDirection.South:
-                    sourceTileLid += sourceTilesetWidth;
-                    targetTileIndex += map.Width;           
-                    break;
-
-                case CardinalDirection.East:            // North or South wall
-                    sourceTileLid ++;
-                    targetTileIndex --;   
-                    break;
-
-                case CardinalDirection.West:
-                    sourceTileLid ++;
-                    targetTileIndex ++;  
-                    break;
-            }
+            sourceTileLid = CalculateNextTileLaterally(_doorTileTransformMap[marker.WallDirection], marker.Direction, sourceTileLid, sourceTilesetWidth);
+            targetTileIndex = CalculateNextTileLaterally(marker.WallDirection, marker.Direction, targetTileIndex, map.Width);
         }
 
         return Result.Ok();
@@ -263,10 +262,10 @@ internal class TiledMapDoorManager {
 
     private void UpdateMapTileIndexRecursively(
         uint sourceTile, 
-        TiledMapDoor[] sourceTiles,
-        uint sourceTilesetHeight, 
+        TiledMapDoor[] sourceTiles, 
         uint sourceTilesetWidth,
-        CardinalDirection doorOnRoomSide,
+        uint sourceTilesetHeight,
+        CardinalDirection wall,
         uint targetTile, 
         TiledMap map) {
 
@@ -301,31 +300,8 @@ internal class TiledMapDoorManager {
         // TODO: Check values for uint if we go into negtive. Should only happen if silly doors
         //       cover the map end to end, e.g. mistake, but we should test for it.
         //
-        switch (doorOnRoomSide) {
-            case CardinalDirection.North:           
-                sourceTile += sourceTilesetWidth;
-                targetTile += map.Width;
-                break;
-
-            case CardinalDirection.South:
-                sourceTile -= sourceTilesetWidth;
-                targetTile -= map.Width;
-                break;
-
-            case CardinalDirection.East:
-                sourceTile --;
-                targetTile --;
-                break;
-
-            case CardinalDirection.West:
-                sourceTile ++;
-                targetTile ++;
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(CardinalDirection), 
-                    "Something went wrong extracting door tiles all four directions. Check the tile set.");
-        }
+        sourceTile = CalculateNextTileMedially(_doorTileTransformMap[wall], sourceTile, sourceTilesetWidth);
+        targetTile = CalculateNextTileMedially(wall, targetTile, map.Width);
 
         // Try update map for depth-1 door tile!
         //
@@ -334,7 +310,7 @@ internal class TiledMapDoorManager {
             sourceTiles, 
             sourceTilesetWidth, 
             sourceTilesetHeight, 
-            doorOnRoomSide, 
+            wall, 
             targetTile, 
             map);
     }
@@ -346,40 +322,62 @@ internal class TiledMapDoorManager {
         foreach (KeyValuePair<string, TiledSet> kvp in tilesets) {
             var source = kvp.Key;
             var ts = kvp.Value;
-            
+
+            // Get first Gid for this tile
+            //
+            var firstGid = map.TileSets.First(kvp => Path.GetFileName(kvp.Source) == source).FirstGid;
+        
             foreach (TiledSetTile t in ts.Tiles) {
-                bool isFirstTile = false;
+                bool isFirst = false;
+                bool isLast = false;
                 bool isDoor = false;
-                CardinalDirection wall = CardinalDirection.Other;
+
+                var walls = new List<CardinalDirection>();
 
                 foreach (TiledProperty p in t.Properties) {
                     if (p.Name == "Type")
-                        isDoor = p.Value == "Door";
+                        isDoor = p.Value.ToLower() == "door";
 
-                    if (p.Name == "IsFirstDoor")
-                        isFirstTile = p.Value == "true";
+                    if (p.Name == "IsFirst")
+                        isFirst = p.Value.ToLower() == "true";
+
+                    if (p.Name == "IsLast")
+                        isLast = p.Value.ToLower() == "true";
 
                     if (p.Name == "Direction") {
-                        if (!Enum.TryParse<CardinalDirection>(p.Value, out wall))
+                        var wallStrings = p.Value.Split(";").Select(s => s.Trim().ToLower()).ToList();
+                        if (wallStrings.Count == 0)
                             return Result.Fail(new TiledMapDoorInstallerValidationError(
-                                "Incorrect value for Direction property. Should be North, South, East or West"));
+                                "No wall direction provided for tile"));
+
+                        for (int i=0; i<wallStrings.Count; i++)
+                            walls.Add(ParseDirection(wallStrings[i]));    
                     }
                 }
 
                 if (!isDoor)
                     continue;
 
-                if (!_doorTiles.ContainsKey(wall))     
-                    _doorTiles.Add(wall, new List<TiledMapDoor>());
+                CardinalDirection primaryWall = walls[0];
 
-                // Get first Gid for this tile
-                //
-                var firstGid = map.TileSets.First(kvp => Path.GetFileName(kvp.Source) == source).FirstGid;
-                var tileGid = firstGid + t.Id;
+                for (int i=0; i<walls.Count; i++) {
+                    var wall = walls[i];
+                    if (!_doorTiles.ContainsKey(wall))     
+                        _doorTiles.Add(wall, new List<TiledMapDoor>());
 
-                // Gid is just the local tile index since there is no transform to apply
-                //
-                _doorTiles[wall].Add(new TiledMapDoor(t.Id, tileGid, isFirstTile));
+                    var tileGid = firstGid + t.Id;
+
+                    // Apply a transform to the tile relative to it's primary wall
+                    //
+                    tileGid = ApplyTileTransformRelativeToWall(primaryWall, wall, tileGid);
+
+                    _doorTiles[wall].Add(new TiledMapDoor(t.Id, tileGid, isFirst, isLast));
+
+                    // Keep track of original wall direction in tilset so we know how to reference 
+                    //
+                    if (!_doorTileTransformMap.Contains(new KeyValuePair<CardinalDirection, CardinalDirection>(wall, primaryWall)))
+                        _doorTileTransformMap.Add(wall, primaryWall);
+                }
             }
 
             // Break if we've processed doors from this tileset. We're done.
@@ -388,39 +386,7 @@ internal class TiledMapDoorManager {
             //          multiple tilesets per map, e.g. rooms painted via differing tilesets but that 
             //          would require a bigger overhaul incl. significant work in the tilemap merger.
             //
-            if (_doorTiles.Count > 0) { 
-
-                // We only need door tiles for two directions (N and E) on the tile sheet.
-                // For S we rotate E by flipping horizontally then diagonally)
-                // For W we flip E horizontally
-                //
-                // TODO: This is very specific to a single use case -- come up with a flexibile system
-                //
-                if (!_doorTiles.ContainsKey(CardinalDirection.North) || !_doorTiles.ContainsKey(CardinalDirection.East))
-                    return Result.Fail(new TiledMapDoorInstallerValidationError(
-                        "North or East facing door's have not been defined in the tileset -- though South and West can be dynamically added, North and East are mandatory"));
-
-                if (!_doorTiles.ContainsKey(CardinalDirection.West)) {
-                    _doorTiles.Add(CardinalDirection.West, new List<TiledMapDoor>());
-
-                    foreach (TiledMapDoor d in _doorTiles[CardinalDirection.East]) {
-                        _doorTiles[CardinalDirection.West].Add(
-                            new TiledMapDoor(d.Lid, d.Gid | Constants.FLIPPED_HORIZONTALLY_FLAG, d.IsFirstTile));
-                    }
-                }
-
-                if (!_doorTiles.ContainsKey(CardinalDirection.South)) {
-                    _doorTiles.Add(CardinalDirection.South, new List<TiledMapDoor>());
-
-                    foreach (TiledMapDoor d in _doorTiles[CardinalDirection.East]) {
-                        _doorTiles[CardinalDirection.South].Add(
-                            new TiledMapDoor(
-                                d.Lid, 
-                                d.Gid | Constants.FLIPPED_HORIZONTALLY_FLAG | Constants.FLIPPED_DIAGONALLY_FLAG, 
-                                d.IsFirstTile));
-                    }
-                }
-
+            if (_doorTiles.Count > 0) {
                 // Make sure we do have all doors.
                 //
                 if (_doorTiles.Count != 4)
@@ -433,6 +399,136 @@ internal class TiledMapDoorManager {
         }
 
         return Result.Ok();
+    }
+
+    private StartingTileDrawOrder GetTileDrawOrder(CardinalDirection door) {
+        // Assumes right-down tile draw order
+        //
+        return door switch {
+            CardinalDirection.North => StartingTileDrawOrder.Last,
+            CardinalDirection.South => StartingTileDrawOrder.First,
+            CardinalDirection.East => StartingTileDrawOrder.First,
+            CardinalDirection.West => StartingTileDrawOrder.Last
+        };
+    }
+
+    private uint CalculateNextTileLaterally(CardinalDirection wall, CardinalDirection door, uint currentTile, uint columns) {
+        var nextTile = currentTile;
+
+        // Assumes right-down tile draw order
+        //
+        switch (wall) {
+            case CardinalDirection.North: 
+            case CardinalDirection.South: 
+                return door switch {
+                    CardinalDirection.North =>  --nextTile,
+                    CardinalDirection.South => ++nextTile,
+                    CardinalDirection.East => ++nextTile,
+                    CardinalDirection.West => --nextTile
+                };
+
+            case CardinalDirection.East:
+            case CardinalDirection.West:
+                return door switch {
+                    CardinalDirection.North => nextTile -= columns,
+                    CardinalDirection.South => nextTile += columns,
+                    CardinalDirection.East => nextTile += columns,
+                    CardinalDirection.West => nextTile -= columns
+                };
+
+            default:
+                throw new Exception("Something went wrong calculating next tile, either wall or door direction incorrect");
+        }
+    }
+
+    private uint CalculateNextTileMedially(CardinalDirection wall, uint currentTile, uint columns) {
+        var nextTile = currentTile;
+
+        return wall switch {
+            CardinalDirection.North => nextTile += columns,
+            CardinalDirection.South => nextTile -= columns,
+            CardinalDirection.East => --nextTile,
+            CardinalDirection.West => ++nextTile
+        };
+    }
+
+
+    private uint ApplyTileTransformRelativeToWall(CardinalDirection primaryWall, CardinalDirection wall, uint tileGid) {
+        // No transform to apply to first wall (primary)
+        //
+        if (primaryWall == wall)
+            return tileGid;
+
+        var tileGidTrans = tileGid;
+
+        // Transformed in such a way that First and Last indexes remain in the same order
+        //
+        switch (primaryWall) {
+            case CardinalDirection.North: 
+                tileGidTrans = 
+                    wall switch {
+                        CardinalDirection.South => tileGid | Constants.FLIPPED_VERTICALLY_FLAG,
+                        CardinalDirection.East => tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG | Constants.FLIPPED_DIAGONALLY_FLAG, // 90d clock
+                        CardinalDirection.West => tileGid | Constants.FLIPPED_DIAGONALLY_FLAG 
+                    };
+
+                break;
+
+            case CardinalDirection.South: 
+                tileGidTrans = 
+                    wall switch {
+                        CardinalDirection.North => tileGid | Constants.FLIPPED_VERTICALLY_FLAG,
+                        CardinalDirection.East => tileGid | Constants.FLIPPED_DIAGONALLY_FLAG, 
+                        CardinalDirection.West => tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG | Constants.FLIPPED_DIAGONALLY_FLAG // 90d clock
+                    };
+
+                break;
+
+            case CardinalDirection.East: 
+                tileGidTrans = 
+                    wall switch {
+                        CardinalDirection.North => tileGid | Constants.FLIPPED_VERTICALLY_FLAG | Constants.FLIPPED_DIAGONALLY_FLAG, // 90d anti-clock
+                        CardinalDirection.South => tileGid | Constants.FLIPPED_DIAGONALLY_FLAG,
+                        CardinalDirection.West => tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG
+                    };
+
+                break;
+
+            case CardinalDirection.West: 
+                tileGidTrans = 
+                    wall switch {
+                        CardinalDirection.North => tileGid | Constants.FLIPPED_DIAGONALLY_FLAG, 
+                        CardinalDirection.South => tileGid | Constants.FLIPPED_VERTICALLY_FLAG | Constants.FLIPPED_DIAGONALLY_FLAG, // 90d anti-clock
+                        CardinalDirection.East => tileGid | Constants.FLIPPED_HORIZONTALLY_FLAG
+                    };
+
+                break;
+        }
+
+        return tileGidTrans;
+    }
+
+    private CardinalDirection ParseDirection(string direction) {
+        switch (direction) {
+            case "north":
+            case "n":
+                return CardinalDirection.North;
+
+            case "south":
+            case "s":
+                return CardinalDirection.South;
+
+            case "east":
+            case "e":
+                return CardinalDirection.East;
+
+            case "west":
+            case "w":
+                return CardinalDirection.West;
+
+            default: 
+                return CardinalDirection.Other;
+        }
     }
 }
 

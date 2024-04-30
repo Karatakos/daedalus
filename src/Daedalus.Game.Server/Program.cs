@@ -33,7 +33,7 @@ class Program
 
         try {
             var res = await builder.BuildAsync("simple-loop", 
-                new TiledMapDungenBuilderProps() { EmptyTileGid = 30 });
+                new TiledMapDungenBuilderProps() { EmptyTileGid = 30, DoorWidth = 2 });
 
             if (res.IsFailed) {
                 logger.LogError(res.Errors[0].Message);
