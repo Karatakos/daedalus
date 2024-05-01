@@ -23,7 +23,7 @@ public class DungenGenerator {
     *  Important: CPU and time intensive and so run on a seperate [threadpool] thread
     *
     */
-    public async Task<Result<DungenLayout>> GenerateAsync(
+    public async Task<Result<Layout>> GenerateAsync(
         TiledMapContent inputGraph,
         TiledMapDungenBuilderProps inputProps) {
 
@@ -44,16 +44,18 @@ public class DungenGenerator {
         Dictionary<string, RoomDefinition> definitions = new Dictionary<string, RoomDefinition>();
         Dictionary<string, RoomBlueprint> blueprints = new Dictionary<string, RoomBlueprint>();
 
+
         foreach (TiledMapGraphRoomNodeContent inputNode in graphInputData.Graph.Rooms) {
             if (!definitions.ContainsKey(inputNode.Definition)) {
-                TiledMapGraphRoomDefinitionContent inputRoomDefinition = graphInputData.RoomDefinitions[inputNode.Definition];
+                TiledMapGraphRoomDefinitionContent inputRoomDefinition = 
+                    graphInputData.GraphDependencies.RoomDefinitions[inputNode.Definition];
 
                 // Process the blueprints 
                 //
                 List<RoomBlueprint> blueprintsTmp = new List<RoomBlueprint>();
                 foreach (string inputBlueprintLabel in inputRoomDefinition.Blueprints) {
                     if (!blueprints.ContainsKey(inputBlueprintLabel)) {
-                        var inputBlueprint = graphInputData.RoomBlueprints[inputBlueprintLabel];
+                        var inputBlueprint = graphInputData.GraphDependencies.RoomBlueprints[inputBlueprintLabel];
 
                         var points = new List<Vector2F>();
                         foreach (int[] point in inputBlueprint.Points) 
@@ -97,7 +99,7 @@ public class DungenGenerator {
         };
     }
 
-    private Result<DungenLayout> GenerateDungenLayout(DungenGeneratorProps props) {
+    private Result<Layout> GenerateDungenLayout(DungenGeneratorProps props) {
         Dungen.DungenGenerator generator = new(props);
 
         // Compute config spaces, validate planar graph, etc.
@@ -112,8 +114,6 @@ public class DungenGenerator {
             return Result.Fail(new DungenSolutioNotFoundError());
         }
         
-        // Warning: Not a clone
-        //
         return generator.Vend();
     }
 }

@@ -14,14 +14,13 @@ using Microsoft.Extensions.Logging;
 using FluentResults;
 
 
-/* Pulls map config from the local disk
+/* Pulls map config from the local disk. Expected files and schema:
 *
-*  Expected files and schema:
-*
-*    - Files: *.graph.json; schema: TiledDungenGraph
-*    - Files: *.tilemap.json; schema: TileMap
-*    - File: blueprints.json; schema: TileMappedGraphRoomBlueprint
-*    - File: definitions.json; schema: TileMappedGraphRoomDefinition
+*    - Files: *.graph.json; schema: TiledMapGraphContent
+*    - Files: *.tilemap.json; schema: TiledMap
+*    - Files: *.tileset.json; schema: TiledSet
+*    - File: blueprints.json; schema: TiledMapGraphRoomBlueprintContent
+*    - File: definitions.json; schema: TiledMapGraphRoomDefinitionContent
 */
 public class LocalDiskContentProvider : IContentProvider {
     private readonly ILogger _logger;
@@ -89,21 +88,26 @@ public class LocalDiskContentProvider : IContentProvider {
 
         // Load tilemaps by enumerating maps from blueprints referenced by graph
         //
-        var templates = await ValidateGraphAndLoadTemplates(graph.Value, blueprints, definitions, files.Value);
-        if (templates.IsFailed)
-            return Result.Fail(templates.Errors);
+        var dependencies = await ValidateGraphAndLoadDependencies(graph.Value, blueprints, definitions, files.Value);
+        if (dependencies.IsFailed)
+            return Result.Fail(dependencies.Errors);
 
-        return new TiledMapContent(graph.Value, templates.Value, definitions, blueprints);
+        return new TiledMapContent(graph.Value, dependencies.Value);
     }
 
-    private async Task<Result<Dictionary<string, TiledMap>>> ValidateGraphAndLoadTemplates(
+    private async Task<Result<TiledMapDependencyContent>> ValidateGraphAndLoadDependencies(
         TiledMapGraphContent graph,
         Dictionary<string, TiledMapGraphRoomBlueprintContent> blueprints,
         Dictionary<string, TiledMapGraphRoomDefinitionContent> definitions,
         FileRepository repo) {
 
         var templates = new Dictionary<string, TiledMap>();
+        var templateTileSets = new Dictionary<string, TiledSet>();
+
         foreach (TiledMapGraphRoomNodeContent room in graph.Rooms) {
+
+            // TODO: Sickening amount of repeated code built up here. SIMPLIFY!!!
+
             if (room.Definition == null)
                 return Result.Fail(
                     new TiledMapGraphValidationError(
@@ -134,7 +138,7 @@ public class LocalDiskContentProvider : IContentProvider {
                     if (templates.ContainsKey(tmLabel))
                         continue;
 
-                    string? matchingTilemapFilePath = repo.TileMaphFilePaths
+                    string? matchingTilemapFilePath = repo.TileMapFilePaths
                         .Find(file => DoesFileMatchLabel(file, tmLabel, FileRegexPatterns.TILEMAP_REGEX));
 
                     if (string.IsNullOrEmpty(matchingTilemapFilePath))
@@ -147,17 +151,41 @@ public class LocalDiskContentProvider : IContentProvider {
                         return Result.Fail(tilemap.Errors);
 
                     templates.Add(tmLabel, tilemap.Value);
+
+                    foreach (TiledMapSet ts in tilemap.Value.TileSets) {
+                        string source = Path.GetFileName(ts.Source);
+                        if (templateTileSets.ContainsKey(source))
+                            continue;
+                        
+                        string? path = repo.TileSetFilePaths
+                            .Find(file => DoesFileMatchLabel(file, source, FileRegexPatterns.TILESET_REGEX));
+
+                        if (string.IsNullOrEmpty(path))
+                            return Result.Fail(
+                            new TiledMapGraphValidationError(
+                                $"Could not find Tileset {source} referenced by Tilemap {tmLabel}."));
+
+                        var tileset = await DeserializeFileToJSON<TiledSet>(path);
+                        if (tileset.IsFailed)
+                            return Result.Fail(tileset.Errors);
+
+                        templateTileSets.Add(source, tileset.Value);
+                    }
                 }
             }
         }   
 
-        return templates;
+        return new TiledMapDependencyContent(
+            templates,
+            templateTileSets,
+            definitions,
+            blueprints);
     }
 
     private bool DoesFileMatchLabel(string file, string target, string pattern) {
         var match = Regex.Match(file, pattern);
         if (match.Success && match.Groups.Count > 1) 
-            return match.Groups[1].Value == target;
+            return match.Groups[0].Value == target ||  match.Groups[1].Value == target;
 
         return false;
     }
@@ -193,52 +221,66 @@ public static class FileRegexPatterns {
     public static readonly string BLUEPRINTS_REGEX = @"(?i)blueprints[.]json$";
     public static readonly string GRAPH_REGEX = @"([a-zA-Z0-9\-_.]+).(?i)graph[.]json$";
     public static readonly string TILEMAP_REGEX = @"([a-zA-Z0-9\-_.]+).(?i)tilemap[.]json$";
+    public static readonly string TILESET_REGEX = @"([a-zA-Z0-9\-_.]+).(?i)tileset[.]json$";
 }
 
 internal class FileRepository {
     public readonly string DefintionFilePath;
     public readonly string BlueprintFilePath;
     public readonly List<string> GraphFilePaths;
-    public readonly List<string> TileMaphFilePaths;
+    public readonly List<string> TileMapFilePaths;
+    public readonly List<string> TileSetFilePaths;
 
     public FileRepository(
         string defintionFilePath,
         string blueprintFilePath,
         List<string> graphFilePaths,
-        List<string> tileMaphFilePaths) {
+        List<string> tileMapFilePaths,
+        List<string> tileSetFilePaths) {
         
         DefintionFilePath = defintionFilePath;
         BlueprintFilePath = blueprintFilePath;
         GraphFilePaths = graphFilePaths;
-        TileMaphFilePaths = tileMaphFilePaths;
+        TileMapFilePaths = tileMapFilePaths;
+        TileSetFilePaths = tileSetFilePaths;
     }
 
     public static Result<FileRepository> FromDirectory(string directory, IFileSystem fs) {
+
+        // TODO: This is quite nasty. Implement a custom recursive directory scan that checks for
+        //       each file type as it scans so as we only scan once. 
+
         var definitions = GetFilesForRegex(directory, 
             new Regex(FileRegexPatterns.DEFINITIONS_REGEX), fs);
         if (definitions.Count == 0) 
-            return Result.Fail(new TiledMapAssetsNotFoundError()); 
+            return Result.Fail(new TiledMapAssetsNotFoundError("Not room definitions found")); 
 
         var blueprints = GetFilesForRegex(directory, 
             new Regex(FileRegexPatterns.BLUEPRINTS_REGEX), fs);
         if (blueprints.Count == 0) 
-            return Result.Fail(new TiledMapAssetsNotFoundError()); 
+            return Result.Fail(new TiledMapAssetsNotFoundError("Not room blueprints found")); 
 
         var graphs = GetFilesForRegex(directory, 
             new Regex(FileRegexPatterns.GRAPH_REGEX), fs);
         if (graphs.Count == 0) 
-            return Result.Fail(new TiledMapAssetsNotFoundError()); 
+            return Result.Fail(new TiledMapAssetsNotFoundError("Not graphs found")); 
 
         var tilemaps = GetFilesForRegex(directory, 
             new Regex(FileRegexPatterns.TILEMAP_REGEX), fs);
         if (tilemaps.Count == 0) 
-            return Result.Fail(new TiledMapAssetsNotFoundError()); 
+            return Result.Fail(new TiledMapAssetsNotFoundError("Not tile maps found")); 
+
+        var tilesets = GetFilesForRegex(directory, 
+            new Regex(FileRegexPatterns.TILESET_REGEX), fs);
+        if (tilemaps.Count == 0) 
+            return Result.Fail(new TiledMapAssetsNotFoundError("Not tile sets found")); 
         
         return new FileRepository(
             definitions[0], 
             blueprints[0], 
             graphs, 
-            tilemaps);
+            tilemaps,
+            tilesets);
     }
 
     private static List<string> GetFilesForRegex(string directory, Regex regex, IFileSystem fs) {

@@ -7,10 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dungen" Version="1.0.14" />
+    <PackageReference Include="Dungen" Version="1.0.16" />
     <PackageReference Include="FluentResults" Version="3.15.2" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="System.IO.Abstractions" Version="20.0.28" />
+
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>$(MSBuildProjectName).Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

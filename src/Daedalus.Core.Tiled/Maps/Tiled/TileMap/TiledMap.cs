@@ -25,16 +25,16 @@ public class TiledMap {
     public string RenderOrder { get; set; }
 
     [JsonPropertyName("width")]
-    public int Width { get; set; }
+    public uint Width { get; set; }
 
     [JsonPropertyName("height")]
-    public int Height { get; set; }
+    public uint Height { get; set; }
 
     [JsonPropertyName("tilewidth")]
-    public int TileWidth { get; set; }
+    public uint TileWidth { get; set; }
 
     [JsonPropertyName("tileheight")]
-    public int TileHeight { get; set; }
+    public uint TileHeight { get; set; }
 
     [JsonPropertyName("layers")]
     public List<TiledMapLayer> Layers { get; set; }
@@ -59,13 +59,13 @@ public class TiledMap {
     public TiledMapType Type { get; set; }
 
     [JsonPropertyName("properties")]
-    public List<TiledMapProperty> Properties { get; set; }
+    public List<TiledProperty> Properties { get; set; }
 
     public TiledMap(
-        int width,
-        int height,
-        int tilewidth,
-        int tileheight
+        uint width,
+        uint height,
+        uint tilewidth,
+        uint tileheight
     ) {
         if (tilewidth == 0 || tileheight == 0 || width == 0 || height == 0)
             throw new Exception("Tile, and Map Width/Height CANNOT be set to zero please check the tile map templates.");

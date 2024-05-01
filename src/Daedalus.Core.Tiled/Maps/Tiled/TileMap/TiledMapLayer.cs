@@ -27,16 +27,16 @@ public class TiledMapLayer {
         public TiledMapLayerType Type { get; set; }
 
         [JsonPropertyName("data")]
-        public int[] Data { get; set; }
+        public uint[] Data { get; set; }
 
         [JsonPropertyName("objects")]
-        public List<TiledMapObject> Objects { get; set; }
+        public List<TiledObject> Objects { get; set; }
 
         [JsonPropertyName("width")]
-        public int Width { get; set; }
+        public uint Width { get; set; }
 
         [JsonPropertyName("height")]
-        public int Height { get; set; }
+        public uint Height { get; set; }
 
         [JsonPropertyName("x")]
         public int X { get; set; }
@@ -55,7 +55,7 @@ public class TiledMapLayer {
         public TiledMapLayerObjectDrawOrder Draworder { get; set; }
         
         [JsonPropertyName("properties")]
-        public List<TiledMapProperty> Properties { get; set; }
+        public List<TiledProperty> Properties { get; set; }
 
         [JsonPropertyName("layers")]
         public List<TiledMapLayer> Layers { get; set; }
@@ -64,8 +64,8 @@ public class TiledMapLayer {
             int id,
             TiledMapLayerType type,
             string name,
-            int width,
-            int height
+            uint width,
+            uint height
         ) {
             Id = id;
             Type = type;

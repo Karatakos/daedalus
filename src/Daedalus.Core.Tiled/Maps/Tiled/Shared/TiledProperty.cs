@@ -2,7 +2,7 @@ namespace Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
 
-public class TiledMapProperty {
+public class TiledProperty {
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
@@ -12,7 +12,7 @@ public class TiledMapProperty {
         [JsonPropertyName("value")]
         public string Value { get; set; }
 
-        public TiledMapProperty(
+        public TiledProperty(
             string name,
             string type,
             string value

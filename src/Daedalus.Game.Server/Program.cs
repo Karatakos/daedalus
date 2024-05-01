@@ -15,15 +15,17 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        var loggerFactory = LoggerFactory.Create((builder) => 
-            builder.AddSimpleConsole(options => options.SingleLine = true));
+        var loggerFactory = LoggerFactory.Create((builder) => {
+            builder.AddSimpleConsole(options => options.SingleLine = true);
+            builder.SetMinimumLevel(LogLevel.Debug);
+        });
 
         var logger = loggerFactory.CreateLogger<Program>();
 
         logger.LogInformation("Generating a tile map...");
 
-        string workingDir = Path.Combine(Directory.GetCurrentDirectory(), "../../content/maps");
-        string outputDir = Path.Combine(workingDir, "../tmp/tilemaps");
+        string workingDir = Path.Combine(Directory.GetCurrentDirectory(), "../../content/maps/sample");
+        string outputDir = Path.Combine(workingDir, "../../tmp/");
 
         TiledMapDungenBuilder builder = new TiledMapDungenBuilder(
             new LocalDiskContentProvider(
@@ -31,7 +33,7 @@ class Program
 
         try {
             var res = await builder.BuildAsync("simple-loop", 
-                new TiledMapDungenBuilderProps() { EmptyTileGid = 30 });
+                new TiledMapDungenBuilderProps() { EmptyTileGid = 30, DoorWidth = 2 });
 
             if (res.IsFailed) {
                 logger.LogError(res.Errors[0].Message);
@@ -40,7 +42,7 @@ class Program
 
             logger.LogInformation("Writing map to disk ...");
 
-            var mapJson = JsonSerializer.Serialize<TiledMapDungen>(res.Value, new JsonSerializerOptions() { WriteIndented = true });
+            var mapJson = JsonSerializer.Serialize<TiledMapDungen>(res.Value);
             File.WriteAllText(Path.Combine(outputDir, "generatedmap.json"), mapJson);
         }
         catch (Exception ex) {

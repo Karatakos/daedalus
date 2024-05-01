@@ -1,0 +1,53 @@
+[
+    {
+        "label": "xs-sq-1",
+        "points": [
+            [0, 0],
+            [0, 7],
+            [7, 7],
+            [7, 0]
+        ],
+        "compatible-tilemaps": [
+            "xs-sq-desert-1"
+        ]
+    },
+    {
+        "label": "s-sq-1",
+        "points": [
+            [0, 0],
+            [0, 10],
+            [10, 10],
+            [10, 0]
+        ],
+        "compatible-tilemaps": [
+            "s-sq-desert-1",
+            "s-sq-desert-2"
+        ]
+    },
+    {
+        "label": "l-sq-1",
+        "points": [
+            [0, 0],
+            [0, 15],
+            [15, 15],
+            [15, 0]
+        ],
+        "compatible-tilemaps": [
+            "l-sq-desert-1"
+        ]
+    },
+    {
+        "label": "s-l-1",
+        "points": [
+            [0, 0],
+            [0, 10],
+            [6, 10],
+            [6, 6],
+            [10, 6],
+            [10, 0]
+        ],
+        "compatible-tilemaps": [
+            "s-l-desert-1"
+        ]
+    }
+]

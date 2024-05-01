@@ -4,9 +4,14 @@ using Daedalus.Core.Tiled.Maps;
 
 public record TiledMapContent (
     TiledMapGraphContent Graph,
+    TiledMapDependencyContent GraphDependencies  
+);
+
+public record TiledMapDependencyContent (
     Dictionary<string, TiledMap> Templates,
+    Dictionary<string, TiledSet> TileSets,
     Dictionary<string, TiledMapGraphRoomDefinitionContent> RoomDefinitions,
-    Dictionary<string, TiledMapGraphRoomBlueprintContent> RoomBlueprints  
+    Dictionary<string, TiledMapGraphRoomBlueprintContent> RoomBlueprints
 );
 
 public record TiledMapGraphContent (

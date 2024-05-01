@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 
 public class TiledMapSet { 
         [JsonPropertyName("firstgid")]
-        public int FirstGid { get; }
+        public uint FirstGid { get; }
 
         [JsonPropertyName("source")]
         public string Source { get; }
 
-        public TiledMapSet(int firstGid, string source) {
+        public TiledMapSet(uint firstGid, string source) {
             FirstGid = firstGid;
             Source = source;
         }

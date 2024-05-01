@@ -10,27 +10,29 @@ using Microsoft.Xna.Framework;
 
 internal class TiledMapMerger
 {
-    public HashSet<int> DirtyTileIndices;
+    public HashSet<uint> DirtyTileIndices;
     private readonly ILogger _logger;
     private readonly ILoggerFactory _loggerFactory; 
     private int ObjectCount = 0;
 
-    public TiledMapMerger(
+    internal TiledMapMerger(
         ILoggerFactory loggerFactory) {
 
         _logger = loggerFactory.CreateLogger<TiledMapMerger>();
         _loggerFactory = loggerFactory;
         
-        DirtyTileIndices = new HashSet<int>();
+        DirtyTileIndices = new HashSet<uint>();
     }
 
     /* Merges source map into destination map. Mutates destination map.
     */
-    public Result<TiledMap> Merge(
+    internal Result<TiledMap> Merge(
         TiledMap destination,
         TiledMap source,
         Vector2 position,
-        int emptyGid) {
+        uint emptyGid) {
+        
+        _logger.LogDebug($"\nMerging room template map into world map starting at room position {position}");
 
         // For tile layers a caller may need to know which tiles of the destination map were touched
         //
@@ -78,7 +80,7 @@ internal class TiledMapMerger
         return destination;
     }
 
-    private void MergeLayersWithMap(TiledMap destination, TiledMap source, List<TiledMapLayer> layers, Vector2 position, int emptyGid, ref int layerIndex) {
+    private void MergeLayersWithMap(TiledMap destination, TiledMap source, List<TiledMapLayer> layers, Vector2 position, uint emptyGid, ref int layerIndex) {
         // Algorithm:
         //
         //  Given a valid room template:
@@ -109,12 +111,12 @@ internal class TiledMapMerger
                 if (tempLayer.Type == TiledMapLayerType.tilelayer) {
                     var tileLayerDataSize = destination.Width * destination.Height;
 
-                    mapLayer.Data = new int[tileLayerDataSize];
+                    mapLayer.Data = new uint[tileLayerDataSize];
                     
-                    Array.Fill<int>(mapLayer.Data, emptyGid);
+                    Array.Fill<uint>(mapLayer.Data, emptyGid);
                 }  
                 else {
-                    mapLayer.Objects = new List<TiledMapObject>();
+                    mapLayer.Objects = new List<TiledObject>();
                     mapLayer.Draworder = tempLayer.Draworder;
                 }
             }
@@ -129,8 +131,8 @@ internal class TiledMapMerger
     }
 
     private void TransformMergeObjectLayerWithMapLayer(TiledMapLayer destinationLayer, TiledMapLayer sourceLayer, Vector2 position) {
-        foreach (TiledMapObject templateObject in sourceLayer.Objects) {
-            var copy = new TiledMapObject(++ObjectCount, templateObject.Name, templateObject.Type) {
+        foreach (TiledObject templateObject in sourceLayer.Objects) {
+            var copy = new TiledObject(++ObjectCount, templateObject.Name, templateObject.Type) {
                 X = templateObject.X + position.X,
                 Y = templateObject.Y + position.Y,
                 Width = templateObject.Width,
@@ -141,17 +143,17 @@ internal class TiledMapMerger
                 Gid = templateObject.Gid };
             
             if (templateObject.Polygon != null) {
-                copy.Polygon = new List<TiledMapPolygon2d>();
+                copy.Polygon = new List<TiledPolygon2d>();
 
-                foreach (TiledMapPolygon2d poly in templateObject.Polygon)
-                    copy.Polygon.Add(new TiledMapPolygon2d(poly.X, poly.Y));
+                foreach (TiledPolygon2d poly in templateObject.Polygon)
+                    copy.Polygon.Add(new TiledPolygon2d(poly.X, poly.Y));
             }
 
             if (templateObject.Properties != null) {
-            copy.Properties = new List<TiledMapProperty>();
+            copy.Properties = new List<TiledProperty>();
 
-            foreach (TiledMapProperty prop in templateObject.Properties)
-                copy.Properties.Add(new TiledMapProperty(prop.Name, prop.Type, prop.Value));
+            foreach (TiledProperty prop in templateObject.Properties)
+                copy.Properties.Add(new TiledProperty(prop.Name, prop.Type, prop.Value));
             }
 
             destinationLayer.Objects.Add(copy);
@@ -165,11 +167,15 @@ internal class TiledMapMerger
         TiledMap source, 
         Vector2 position) {
 
-        for (int j = 0; j < sourceLayer.Data.Length; j++) {
+        _logger.LogDebug($"\nMerging source layer into map layer {destinationLayer.Id}");
+
+        for (uint j = 0; j < sourceLayer.Data.Length; j++) {
             var localpos = source.GetWorldSpacePositionForTileIndex(j);
             var worldTileIndex = destination.GetTileIndexContainingWorldSpacePosition(position + localpos);
 
             destinationLayer.Data[worldTileIndex] = sourceLayer.Data[j];
+
+            _logger.LogDebug($"Writing source tile gid {sourceLayer.Data[j]} to tile index {worldTileIndex}");
 
             if (!DirtyTileIndices.Contains(worldTileIndex))
                 DirtyTileIndices.Add(worldTileIndex);
