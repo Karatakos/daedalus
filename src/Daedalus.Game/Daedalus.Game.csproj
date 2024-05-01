@@ -19,7 +19,7 @@
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dungen" Version="1.0.14" />
+    <PackageReference Include="Dungen" Version="1.0.16" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.666-develop" />

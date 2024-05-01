@@ -122,7 +122,7 @@ public class TiledMapDungenBuilder
 
             // Keep track of tile indices p/room for easy tile->room lookup for map consumers
             //
-            var tiledRoom = new TiledMapDungenRoom(room.Number, DungenToTiledDungenRoomType(room.Type));
+            var tiledRoom = new TiledMapDungenRoom(room.Number);
             tiledRoom.AccessibleRooms.AddRange(room.Doors.Select(x => x.ConnectingRoomNumber));
             tiledRoom.TileIndices.AddRange(templateMerger.DirtyTileIndices);
 
@@ -141,7 +141,7 @@ public class TiledMapDungenBuilder
             throw new Exception("No compatible tilemaps found for blueprint!");
 
         var rnd = new Random();
-        var rndMap = rnd.Next(0, blueprint.CompatibleTilemaps.Count-1);
+        var rndMap = rnd.Next(0, blueprint.CompatibleTilemaps.Count);
 
         // TODO: Clone
         //
@@ -163,25 +163,6 @@ public class TiledMapDungenBuilder
             }
 
             return null;
-    }
-
-    private TiledMapDungenRoomType DungenToTiledDungenRoomType(RoomType type) {
-        switch (type) {
-            case RoomType.Entrance: 
-                return TiledMapDungenRoomType.Entrance;
-            
-            case RoomType.Exit: 
-                return TiledMapDungenRoomType.Exit;
-
-            case RoomType.Arena: 
-                return TiledMapDungenRoomType.Arena;
-
-            case RoomType.Corridor: 
-                return TiledMapDungenRoomType.Corridor;
-
-            default: 
-                return TiledMapDungenRoomType.Normal;
-        }
     }
 }
 

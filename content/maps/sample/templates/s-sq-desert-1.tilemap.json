@@ -44,7 +44,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"s-sq-desert-1.tileset.json"
+         "source":"tilesets/s-sq-desert-1.tileset.json"
         }],
  "tilewidth":32,
  "type":"map",

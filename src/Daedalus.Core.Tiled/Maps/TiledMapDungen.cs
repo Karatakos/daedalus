@@ -5,15 +5,6 @@ using Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum TiledMapDungenRoomType {
-    Entrance,
-    Exit,
-    Normal,
-    Arena,
-    Corridor
-}
-
 public class TiledMapDungen : TiledMap {
 
     public List<TiledMapDungenRoom> Rooms { get; set; }
@@ -37,12 +28,8 @@ public class TiledMapDungenRoom {
     public List<uint> TileIndices { get; set; }
     public int Number { get; set; }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public TiledMapDungenRoomType Type;
-
-    public TiledMapDungenRoom(int number, TiledMapDungenRoomType type) {
+    public TiledMapDungenRoom(int number) {
         Number = number;
-        Type = type;
 
         AccessibleRooms = new List<int>(); 
         TileIndices = new List<uint>();
