@@ -2,7 +2,7 @@ namespace Daedalus.Core.Tiled.Procedural.Extensions;
 
 using Microsoft.Xna.Framework;
 
-using Dungen;
+using GraphToGrid;
 
 public static class Vector2FExtensions {
     public static Vector2 ToVector2(this Vector2F vec) {

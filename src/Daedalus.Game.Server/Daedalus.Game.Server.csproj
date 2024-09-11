@@ -2,9 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Daedalus.Core.Tiled\Daedalus.Core.Tiled.csproj" />
+    <ProjectReference Include="..\Daedalus.Core\Daedalus.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="litenetlib" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.2" />
   </ItemGroup>

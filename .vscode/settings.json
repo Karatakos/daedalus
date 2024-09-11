@@ -1,3 +1,4 @@
 {
-    "explorer.excludeGitIgnore": true
+    "explorer.excludeGitIgnore": true,
+    "workbench.tree.indent": 18
 }

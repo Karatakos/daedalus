@@ -13,7 +13,7 @@ using FluentAssertions;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Dungen;
+using GraphToGrid;
 
 public class TileMapDoorManagerTests
 {      
@@ -43,7 +43,7 @@ public class TileMapDoorManagerTests
                 new Vector2F(1.9f, 5),     //
                 new Vector2F(5, 5),  
                 new Vector2F(5, -5)
-            ]), RoomType.Normal, 1);
+            ]), 1);
 
         // Mark/add door line
         //
@@ -58,7 +58,7 @@ public class TileMapDoorManagerTests
                 new Vector2F(-2.2f, 15),   
                 new Vector2F(7.8f, 15),  
                 new Vector2F(7.8f, 5)
-            ]), RoomType.Normal, 2);
+            ]), 2);
 
         roomB.Boundary[0] = new BoundaryLine(roomB.Boundary[0].Start, roomB.Boundary[0].End, true, true);
         roomB.Doors.Add(new Door(new Line(roomB.Boundary[0]), 2));
@@ -108,7 +108,7 @@ public class TileMapDoorManagerTests
                 new Vector2F(1.9f, 5),     //
                 new Vector2F(5, 5),  
                 new Vector2F(5, -5)
-            ]), RoomType.Normal, 1);
+            ]), 1);
 
         // Mark/add door line
         //
@@ -155,7 +155,7 @@ public class TileMapDoorManagerTests
                 new Vector2F(5, -5),
                 new Vector2F(1.9f, -5),   // Door Line A (index 2); Wall-South; Line-West
                 new Vector2F(0.9f, -5)    //
-            ]), RoomType.Normal, 1);
+            ]), 1);
 
         // Mark/add door line
         //

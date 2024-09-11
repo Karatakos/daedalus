@@ -3,7 +3,7 @@ namespace Daedalus.Core.Tiled.Procedural;
 using Daedalus.Core.Tiled.Maps;
 using Daedalus.Core.Tiled.Procedural.Errors;
 using Daedalus.Core.Tiled.Procedural.Extensions;
-using Dungen;
+using GraphToGrid;
 using FluentResults;
 using GraphPlanarityTesting.Graphs.Algorithms;
 using Microsoft.Extensions.Logging;

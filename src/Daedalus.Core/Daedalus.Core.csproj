@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Arch" Version="1.2.8" />
+    <PackageReference Include="LiteNetLib" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="MonoGame.Extended" Version="4.0.0" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.666-develop" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.666-develop" />
+    <PackageReference Include="Stateless" Version="5.16.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Daedalus.Core.Tiled\Daedalus.Core.Tiled.csproj" />
+  </ItemGroup>
+
+</Project>

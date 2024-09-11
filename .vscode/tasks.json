@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Daedalus.Game/Daedalus.Game.csproj",
+                "${workspaceFolder}/src/Daedalus.Game.Client/Daedalus.Game.Client.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

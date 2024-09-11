@@ -1,11 +1,14 @@
 namespace Daedalus.Core.Tiled.Maps;
 
-using System.Security.Cryptography.X509Certificates;
+using MemoryPack;
+
 using Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
-public class TiledMapDungen : TiledMap {
+[MemoryPackable]
+public partial class TiledMapDungen : TiledMap {
 
     public List<TiledMapDungenRoom> Rooms { get; set; }
 
@@ -23,7 +26,8 @@ public class TiledMapDungen : TiledMap {
         }
 }
 
-public class TiledMapDungenRoom {
+[MemoryPackable]
+public partial class TiledMapDungenRoom {
     public List<int> AccessibleRooms { get; set; }
     public List<uint> TileIndices { get; set; }
     public int Number { get; set; }

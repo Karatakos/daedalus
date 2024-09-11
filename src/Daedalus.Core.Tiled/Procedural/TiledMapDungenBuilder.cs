@@ -5,7 +5,7 @@ using Daedalus.Core.Tiled.Procedural.ContentProviders;
 using Daedalus.Core.Tiled.Procedural.Extensions;
 using Daedalus.Core.Tiled.Procedural.Errors;
 
-using Dungen;
+using GraphToGrid;
 using FluentResults;
 
 using Microsoft.Extensions.Logging;
@@ -148,7 +148,7 @@ public class TiledMapDungenBuilder
         return templates[blueprint.CompatibleTilemaps[rndMap]];
     }
 
-    private TiledMapGraphRoomBlueprintContent GetBlueprintMatchingShape(List<TiledMapGraphRoomBlueprintContent> blueprints, List<Dungen.Vector2F> points) {
+    private TiledMapGraphRoomBlueprintContent GetBlueprintMatchingShape(List<TiledMapGraphRoomBlueprintContent> blueprints, List<Vector2F> points) {
             foreach(TiledMapGraphRoomBlueprintContent blueprint in blueprints) {
                 bool match = true;
                 for (int i=0; i<points.Count; i++) {

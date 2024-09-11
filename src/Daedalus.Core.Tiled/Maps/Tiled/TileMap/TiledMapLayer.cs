@@ -3,6 +3,8 @@ namespace Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
 
+using MemoryPack;
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TiledMapLayerType {
     objectgroup,
@@ -15,7 +17,8 @@ public enum TiledMapLayerObjectDrawOrder {
     topdown
 }
 
-public class TiledMapLayer {
+[MemoryPackable]
+public partial class TiledMapLayer {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
