@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 public class DaedalusNetPeer (NetPeer peer) {
     public NetPeer Peer { get => peer; }
 
-    public void SendCommand(byte type, byte[] bytes) {
+    public void SendCommand(byte[] bytes) {
         var header = new PacketHeader() { 
             Type = PacketType.Command 
         };
@@ -15,10 +15,7 @@ public class DaedalusNetPeer (NetPeer peer) {
         var writer = new NetDataWriter();
         
         PacketHeader.Serialize(header, writer);
-        writer.Put(type);
-        writer.PutBytesWithLength(bytes);
-
-        DS.Log.LogInformation($"[Sending Command] Payload Size {(float)bytes.Length/1024} kb");
+        writer.Put(bytes);
 
         Send(writer.Data, DeliveryMethod.ReliableOrdered);
     }
@@ -67,7 +64,7 @@ public class DaedalusNetPeer (NetPeer peer) {
     }
 
     public void Send(byte[] bytes, DeliveryMethod method) {
-        DS.Log.LogInformation($"Sending packet of total size {(float)bytes.Length/1024} kb");
+        DS.Log.LogInformation($"[Send] Payload size {(float)bytes.Length/1024} kb");
 
         Peer.Send(bytes, method);
     }

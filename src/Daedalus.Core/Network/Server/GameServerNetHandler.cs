@@ -16,7 +16,7 @@ using Daedalus.Core.Network.Errors;
 *   
 */
 public class GameServerNetHandler(PlayerRegistrar playerRegistrar): INetEventListener {
-    public event Action<DaedalusNetPeer, byte, byte[]> OnClientCommand;
+    public event Action<DaedalusNetPeer, byte[]> OnClientCommand;
     public event Action<DaedalusNetPeer, byte, string> OnClientError;
     public event Action<DaedalusNetPeer, byte> OnClientStatusUpdate;
 
@@ -82,9 +82,7 @@ public class GameServerNetHandler(PlayerRegistrar playerRegistrar): INetEventLis
                 break;
 
             case PacketType.Command:
-                var type = reader.GetByte();
-
-                OnClientCommand(client, type, reader.GetRemainingBytes());
+                OnClientCommand(client, reader.GetRemainingBytes());
 
                 break;
 

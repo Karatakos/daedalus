@@ -25,7 +25,7 @@ public class MapRenderingSystem(World world, GraphicsDeviceManager graphics) : S
         world.Query(in _queryDesc, (ref BootstrapComponent map) => {
             // TODO: Render :)
 
-            DS.Log.LogInformation($"Map rendered with tile width {map.Map.Width} and height {map.Map.Height}");
+            // DS.Log.LogInformation($"Map rendered with tile width {map.Map.Width} and height {map.Map.Height}");
         });
     }
 }

@@ -63,7 +63,7 @@ public class GameClient: DaedalusGame {
         listener.OnServerError += (code, message) => DS.Log.LogError($"Server error code: {(ServerErrors)code} message: {message}");
         listener.OnServerStatusUpdate += (status) => DS.Log.LogInformation($"Server status changed to {status}");
         listener.OnWorldStateUpdated += () => DS.Log.LogInformation("Snapshot processed");
-        listener.OnServerCommand += (type, payload) => HandleServerCommand(type, payload);
+        listener.OnServerCommand += (payload) => HandleServerCommand(payload);
         listener.OnAuthenticated += (peer) => HandleAuthenticated(peer);
 
         _net = new NetManager(listener);
@@ -115,9 +115,10 @@ public class GameClient: DaedalusGame {
                 if (bootstrappingComponent.MapLoaded) {
                     _serverPeer.SendStatus((byte)NetPlayerStateTransitions.FINISHED_BOOTSTRAPPING);
 
-                    // HACK: Server should be setting state. Waiting for snapshot implementation
+                    // HACK: Server should be setting state. We only request state transitions 
+                    //       Waiting for snapshot implementation until then skip waiting state and go straight to ingame
                     // 
-                    _world.Get<NetPlayerComponent>(_player).State = NetPlayerState.WAITING;
+                    _world.Get<NetPlayerComponent>(_player).State = NetPlayerState.INGAME;
                 }
 
                 break;
@@ -139,19 +140,15 @@ public class GameClient: DaedalusGame {
             // State will from hereonout be controlled by the server
             //
             State = NetPlayerState.AUTHENTICATED,  
-            Identity = new NetPlayerIdentity() {  Username = "Ted", UserId = "1" }
+            Identity = new NetPlayerIdentity() {  Username = "Beefcake", UserId = "1" }
         });
     }
 
-    protected void HandleServerCommand(byte type, byte[] payload){
-        DS.Log.LogInformation($"Processing Command {(CommandType)type} of size {(float)payload.Length/1024} kb");
+    protected void HandleServerCommand(byte[] payload){
+        var cmd = CommandSerializer.Deserialize(payload);
 
-        var cmd = CommandFactory.Deserialize((CommandType)type, payload);
+        DS.Log.LogInformation($"Received Command {cmd.Type} of size {(float)payload.Length/1024} kb");
 
-        if (!CommandHandlerFactory.Get(cmd.Type, _world, _player).Execute(cmd)) {
-            DS.Log.LogError($"Failed to execute server command {cmd.Type}. Informing server.");
-
-            _serverPeer.SendError((byte)ClientErrors.COMMAND_EXECUTION_FAILED, "Command could not be executed on client");
-        }
+        CommandHandlerFactory.Get(cmd.Type, _world, _player).Execute((dynamic)cmd);
     }
 }

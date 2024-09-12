@@ -2,6 +2,6 @@ using System.Windows.Input;
 
 namespace Daedalus.Core.Commands;
 
-public interface ICommandHander<TCmd, TRes> where TCmd: ICommand {
-    public TRes Execute(TCmd command);
+public interface ICommandHander<TCmd> where TCmd: ICommand {
+    public void Execute(TCmd command);
 }

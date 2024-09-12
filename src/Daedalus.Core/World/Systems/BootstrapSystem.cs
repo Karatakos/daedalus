@@ -31,9 +31,7 @@ public class BootstrapSystem(World world, TiledMapDungen map) : System<GameTime>
                 case NetPlayerState.AUTHENTICATED:
                     player.State = NetPlayerState.BOOTSTRAPPING;
 
-                    player.Peer.SendCommand(
-                        (byte)Commands.CommandType.LoadMap, 
-                        CommandFactory.Serialize(new LoadMapCmd(map)));
+                    player.Peer.SendCommand(CommandSerializer.Serialize(new LoadMapCmd(map)));
 
                     DS.Log.LogInformation($"Command {Commands.CommandType.LoadMap} issued to player [NetId]: {player.NetId} [Username]: {player.Identity.Username}");
 

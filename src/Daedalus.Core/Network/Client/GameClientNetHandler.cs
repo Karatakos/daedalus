@@ -15,7 +15,7 @@ using Daedalus.Core.Network.Errors;
 *   
 */
 public class GameClientNetHandler(string authenticationJwt): INetEventListener {
-    public event Action<byte, byte[]> OnServerCommand;
+    public event Action<byte[]> OnServerCommand;
     public event Action<byte, string> OnServerError;
     public event Action<byte> OnServerStatusUpdate;
     public event Action OnWorldStateUpdated;
@@ -48,17 +48,13 @@ public class GameClientNetHandler(string authenticationJwt): INetEventListener {
         byte firstByte, 
         DeliveryMethod method) {
 
-        var header = new PacketHeader() {
-            Type = (PacketType)reader.GetByte()
-        };
+        var header = PacketHeader.Deserialize(reader);
 
         DS.Log.LogInformation($"Received packet type {header.Type} from peer {peer.Address} of total size {(float)reader.UserDataSize/1024} kb");
 
         switch (header.Type) {
             case PacketType.Command: 
-                var type = reader.GetByte();
-
-                OnServerCommand(type, reader.GetRemainingBytes());
+                OnServerCommand(reader.GetRemainingBytes());
 
                 break;
 
@@ -90,7 +86,7 @@ public class GameClientNetHandler(string authenticationJwt): INetEventListener {
 
             default: 
                 peer.Send(
-                    [(byte)PacketType.Error, (byte)ServerErrors.PACKET_TYPE_UNSUPPORTED],
+                    [(byte)PacketType.Error, (byte)ClientErrors.PACKET_TYPE_UNSUPPORTED],
                     DeliveryMethod.ReliableOrdered);
 
                 DS.Log.LogInformation($"Net packet type {header.Type} not supported on the client");

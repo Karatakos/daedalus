@@ -9,8 +9,8 @@ using Daedalus.Core.Components;
 using Daedalus.Core.Tiled.Maps;
 using Daedalus.Core.Network.Components;
 
-public class LoadMapCommandHandler(World world, Entity player) : ICommandHander<LoadMapCmd, bool> {
-    public bool Execute(LoadMapCmd command) {
+public class LoadMapCommandHandler(World world, Entity player) : ICommandHander<LoadMapCmd> {
+    public void Execute(LoadMapCmd command) {
         if (player == null)
             throw new Exception("Sever shouldnt be sending commands before authentication!");
 
@@ -25,12 +25,8 @@ public class LoadMapCommandHandler(World world, Entity player) : ICommandHander<
 
         // Offload to a rendering system by tagging player with the map
         //
-        world.Set(player, new BootstrapComponent() { Map = command.Map });
-
-        // Help indeicate when we're ready
-        //
-        world.Get<BootstrapComponent>(player).MapLoaded = true;
-
-        return true;
+        world.Add(player, new BootstrapComponent() { 
+            Map = command.Map,
+            MapLoaded = true });
     }
 }

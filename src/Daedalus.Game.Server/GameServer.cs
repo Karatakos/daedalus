@@ -81,7 +81,7 @@ public class GameServer: DaedalusGameHeadless {
 
         handler.OnClientError += (client, code, message) => HandleClientError(client, code, message);
         handler.OnClientStatusUpdate += (client, code) => HandleClientStatusUpdate(client, code);
-        handler.OnClientCommand += (client, type, payload) => HandleClientCommand(client, type, payload);
+        handler.OnClientCommand += (client, payload) => HandleClientCommand(client, payload);
 
         // Initialize network listener
         // 
@@ -151,27 +151,21 @@ public class GameServer: DaedalusGameHeadless {
         //Logger.LogInformation($"Fixed Dt: {gameTime.ElapsedGameTime.TotalMilliseconds} Interpolant: {Interpolant}");
     }
 
-    protected void HandleClientCommand(DaedalusNetPeer client, byte type, byte[] payload){
-        var cmdType = (Daedalus.Core.Commands.CommandType)type;
+    protected void HandleClientCommand(DaedalusNetPeer client, byte[] payload){
+        var cmd = CommandSerializer.Deserialize(payload);
 
-        DS.Log.LogError($"Handling command {cmdType} received from client");
-
-        var cmd = CommandFactory.Deserialize(cmdType, payload);
+        DS.Log.LogInformation($"Received Command {cmd.Type} of size {(float)payload.Length/1024} kb");
 
         if(!_playerRegistrar.TryGetRegisteredPlayerEntity(client.Peer, out var entity))
             return;
 
-        if (!CommandHandlerFactory.Get(cmd.Type, _world, (Entity)entity).Execute(cmd)) {
-            DS.Log.LogError($"Failed to execute server command {cmd.Type}. Informing server.");
-
-            client.SendError((byte)ClientErrors.COMMAND_EXECUTION_FAILED, "Command could not be executed on client");
-        }
+        CommandHandlerFactory.Get(cmd.Type, _world, (Entity)entity).Execute((dynamic)cmd);
     }
 
     protected void HandleClientStatusUpdate(DaedalusNetPeer client, byte code){
         var transition = (NetPlayerStateTransitions)code;
 
-        DS.Log.LogError($"Handling transition update {transition} from client");
+        DS.Log.LogInformation($"Handling client transition {transition}");
 
         if (!_playerRegistrar.TryGetRegisteredPlayerEntity(client.Peer, out var entity))
             return;
@@ -188,47 +182,3 @@ public class GameServer: DaedalusGameHeadless {
         DS.Log.LogError($"Client error code: {(ClientErrors)code} message: {message}");
     }
 }
-
-public class SmartTiledMapGenerator {
-    public bool Success { get; private set; } = false;
-    public bool Fail { get; private set; } = false;
-    public string Error { get; private set; }
-    public TiledMapDungen Map { get; private set; }
-
-    private int _retries;
-    private string _contentDir;
-    private FileSystem _fs;
-
-    public SmartTiledMapGenerator (FileSystem fs, string contentDir, int retries = 0) {
-        _retries = retries;
-        _contentDir = contentDir;
-        _fs = fs;
-    }
-
-    public async void GenerateAsync(string graph) {
-        TiledMapDungenBuilder builder = new (new LocalDiskContentProvider(DS.LogFactory, _fs, _contentDir), DS.LogFactory);
-
-        var res = await builder.BuildAsync(graph, 
-            new TiledMapDungenBuilderProps() { EmptyTileGid = 30, DoorWidth = 2 });
-
-        if (res.IsFailed) {
-            DS.Log.LogError(res.Errors[0].Message);
-
-            if (_retries > 0) {
-                _retries--;
-
-                GenerateAsync(graph);
-            }
-            else {
-                Error = res.Errors[0].Message;
-                Fail = true;
-
-                return;
-            }
-        }
-
-        Success = true;
-        Map = res.Value;
-    }
-}
-
