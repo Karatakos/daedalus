@@ -1,6 +1,6 @@
 namespace Daedalus.Core.Tiled.Procedural.ContentProviders;
 
-using Dungen;
+using GraphToGrid;
 using FluentResults;
 
 public interface IContentProvider {

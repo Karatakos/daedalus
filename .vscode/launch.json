@@ -5,23 +5,23 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": "Launch Game Client",
+            "name": "Client",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-client",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Daedalus.Game/bin/Debug/net8.0/Daedalus.Game.dll",
+            "program": "${workspaceFolder}/src/Daedalus.Game.Client/bin/Debug/net8.0/Daedalus.Game.Client.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Daedalus.Game",
+            "cwd": "${workspaceFolder}/src/Daedalus.Game.Client",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false
         },
         {
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": "Launch Game Server",
+            "name": "Server",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-server",
@@ -30,13 +30,19 @@
             "args": [],
             "cwd": "${workspaceFolder}/src/Daedalus.Game.Server",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Server/Client",
+            "configurations": ["Server", "Client"]
         }
     ]
 }

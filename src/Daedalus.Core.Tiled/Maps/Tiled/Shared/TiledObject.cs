@@ -2,7 +2,10 @@ namespace Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
 
-public class TiledObject {
+using MemoryPack;
+
+[MemoryPackable]
+public partial class TiledObject {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 

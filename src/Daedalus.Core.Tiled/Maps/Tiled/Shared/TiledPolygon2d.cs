@@ -2,7 +2,10 @@ namespace Daedalus.Core.Tiled.Maps;
 
 using System.Text.Json.Serialization;
 
-public class TiledPolygon2d {
+using MemoryPack;
+
+[MemoryPackable]
+public partial class TiledPolygon2d {
         [JsonPropertyName("x")]
         public float X { get; set; }
 

@@ -3,6 +3,8 @@ namespace Daedalus.Core.Tiled.Maps;
 using System.Text;
 using System.Text.Json.Serialization;
 
+using MemoryPack;
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TiledMapType {
     map
@@ -13,10 +15,11 @@ public enum TiledMapOrientation {
     orthogonal
 }
 
-/* Tile Map compatible & serializable with Tiled Editor v1.8
+/* Tile Map compatible with Tiled Editor v1.8. Json and MemoryPack compatible.
 *
 */
-public class TiledMap {
+[MemoryPackable]
+public partial class TiledMap {
     [JsonPropertyName("orientation")] 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public TiledMapOrientation Orientation { get; set; }

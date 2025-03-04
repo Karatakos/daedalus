@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Game", "src\Daedalus.Game\Daedalus.Game.csproj", "{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Game.Client", "src\Daedalus.Game.Client\Daedalus.Game.Client.csproj", "{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Core.Tiled", "src\Daedalus.Core.Tiled\Daedalus.Core.Tiled.csproj", "{483D17AC-DBE1-4368-ACF4-1FB9D2CBE257}"
 EndProject
@@ -11,13 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Core.Tiled.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Game.Server", "src\Daedalus.Game.Server\Daedalus.Game.Server.csproj", "{9D99014D-D536-4408-BD54-36BD21EF456B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.Core", "src\Daedalus.Core\Daedalus.Core.csproj", "{9460C286-884C-4A8D-AF9B-AAFC2EA082D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D7AE4F2B-D623-42A3-AD99-5A91C025F8B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +35,12 @@ Global
 		{9D99014D-D536-4408-BD54-36BD21EF456B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D99014D-D536-4408-BD54-36BD21EF456B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D99014D-D536-4408-BD54-36BD21EF456B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9460C286-884C-4A8D-AF9B-AAFC2EA082D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9460C286-884C-4A8D-AF9B-AAFC2EA082D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9460C286-884C-4A8D-AF9B-AAFC2EA082D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9460C286-884C-4A8D-AF9B-AAFC2EA082D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
